@@ -3,4 +3,4 @@ build
 *.swp
 config.h
 .config
- .config.old
+.config.old
