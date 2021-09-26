@@ -10,7 +10,7 @@
 - csky-elfabiv2-tools :工具链，C运行库为minilibc，需要到[平头哥开放社区下载](https://occ.t-head.cn/community/download) ，下载时需要根据系统情况下载800系列工具链，mingw为windows版本（x86与x86_64通用），下载完成后解压后再将对应bin目录添加至PATH变量即可完成安装。
 - cmake :生成工程文件。
 - make :执行编译，也可使用其它工具(如ninja)。
-- cat:用于合并生成镜像文件。Windows必须使用MSYS2/cygwin。
+
 
 注意：[官方环境](https://www.winnermicro.com/upload/1/editor/1592032027265.rar)为windows下的环境，安装后即可使用官方的方式（直接使用make）在官方SDK中开发，只需要再安装cmake即可使用cmake生成各种工程（方便编辑）并开发。
 

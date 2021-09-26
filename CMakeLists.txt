@@ -1044,14 +1044,14 @@ endif()
 set(GREATE_IMG_STEP1_FLAGS  -b ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bin  -fc 0 -it 1 -ih 80D0000 -ra 80D0400 -ua 8010000 -nh 0 -un 0 -vs G01.00.02  -o ${PROJECT_NAME})
 set(GREATE_IMG_STEP2_FLAGS  -b ${SDK_ROOT}/tools/w800/w800_secboot.bin -fc 0 -it 0 -ih 8002000 -ra 8002400 -ua 8010000 -nh 80D0000 -un 0 -o w800_secboot)
 set(GREATE_IMG_STEP3_FLAGS  -b ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.img  -fc 1 -it 1 -ih 80D0000 -ra 80D0400 -ua 8010000 -nh 0 -un 0 -vs G01.00.02 -o ${PROJECT_NAME})
-
+set(GREATE_IMG_STEP4_FLAGS  -b ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.img  -sb  w800_secboot.img -fc 1 -it 1 -ih 80D0000 -ra 80D0400 -ua 8010000 -nh 0 -un 0 -vs G01.00.02  -o ${PROJECT_NAME})
 
 #生成其它镜像文件（包括fls文件）
 add_custom_target(${PROJECT_NAME}.fls ALL
 				 COMMAND ${WM_TOOL} ${GREATE_IMG_STEP1_FLAGS} 
 				 COMMAND ${WM_TOOL} ${GREATE_IMG_STEP2_FLAGS}
-				 COMMAND cat ${CMAKE_BINARY_DIR}/w800_secboot.img ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.img > ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.fls 
 				 COMMAND ${WM_TOOL} ${GREATE_IMG_STEP3_FLAGS} 
+				 COMMAND ${WM_TOOL} ${GREATE_IMG_STEP4_FLAGS}
 				 DEPENDS ${PROJECT_NAME}.bin
 				 )
 
