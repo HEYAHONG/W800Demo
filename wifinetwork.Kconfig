@@ -1,0 +1,43 @@
+choice WIFI_NETWORK_TYPE
+        bool "WIFI network type"
+        default WIFI_NETWORK_STA
+config  WIFI_NETWORK_STA
+        bool "STA"
+config  WIFI_NETWORK_SOFTAP
+        bool "SoftAP"
+
+endchoice           
+
+config WIFI_NETWORK_AP_SSID                                                                                                                                                                  
+        string "WIFI AP ssid(default)"                                                                                                                                                       
+        default "Test"                                                                                                                                                                       
+        depends on  WIFI_NETWORK_SOFTAP                                                                                                                            
+                                                                                                                                                                                             
+config WIFI_NETWORK_AP_PASSWORD
+        string "WIFI AP password(default)"
+        default "12345678"
+        depends on  WIFI_NETWORK_SOFTAP
+
+config WIFI_NETWORK_AP_DNSNAME
+        string "dnsname for self"
+        default "local.wm"
+        depends on  WIFI_NETWORK_SOFTAP
+
+config WIFI_NETWORK_AP_CHANNEL
+        int "WIFI AP channel"
+        range 0 14
+        default 7
+        depends on  WIFI_NETWORK_SOFTAP
+
+
+
+config WIFI_NETWORK_ROUTER_AP_SSID
+        string "WIFI Router ssid(default)"
+        default "TestRouter"
+         depends on  WIFI_NETWORK_STA
+
+config  WIFI_NETWORK_ROUTER_AP_PASSWORD
+        string "WIFI Router password(default)"
+        default "12345678"
+        depends on   WIFI_NETWORK_STA
+

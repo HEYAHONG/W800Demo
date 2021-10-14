@@ -1,25 +1,44 @@
-/***************************************************************************** 
-* 
-* File Name : main.c
-* 
-* Description: main 
-* 
-* Copyright (c) 2014 Winner Micro Electronic Design Co., Ltd. 
-* All rights reserved. 
-* 
-* Author : dave
-* 
-* Date : 2014-6-14
-*****************************************************************************/ 
-#include "wm_include.h"
+Ôªø#include "wm_include.h"
+#include "stdbool.h"
+#include "appconfig.h"
+#include "app.h"
+#include "wifinetwork.h"
+#include "ntp.h"
+
+extern size_t  tls_mem_get_avail_heapsize();
+
+static const char * TAG="main";
+static uint32_t main_task_stack[1024];
+static void main_task(void *arg)
+{
+
+#if CONFIG_WIFI_NETWORK == 1
+    //ÂàùÂßãÂåñWIFINetwork
+    wifinetwork_init();
+#endif // CONFIG_WIFI_NETWORK
+
+#if CONFIG_PROTOCOL_NTP == 1
+    ntp_init();
+#endif // CONFIG_PROTOCOL_NTP
+
+    app_init();
+
+    printf("%s:free memory %d bytes\r\n",TAG,tls_mem_get_avail_heapsize());
+    printf("%s:main task running\r\ntick=%lu\r\n",TAG,xTaskGetTickCount());
+
+
+    while(true)
+    {
+        app_loop();
+#if CONFIG_PROTOCOL_NTP == 1
+        ntp_loop();
+#endif // CONFIG_PROTOCOL_NTP
+    }
+}
+
 
 void UserMain(void)
 {
-	printf("\n user task \n");
-
-#if DEMO_CONSOLE
-	CreateDemoTask();
-#endif
-//”√ªß◊‘º∫µƒtask
+    tls_os_task_create(NULL,"main",main_task,NULL,(void *)main_task_stack,sizeof(main_task_stack),1,0);
 }
 

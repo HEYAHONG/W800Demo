@@ -1,0 +1,32 @@
+
+menuconfig PROTOCOL_NTP
+    bool "ntp"
+    default y
+    depends on WIFI_NETWORK_STA
+
+
+if PROTOCOL_NTP
+
+config PROTOCOL_NTP_TIMEZONE
+   string "timezone"
+   default "GMT-8"
+
+config PROTOCOL_NTP_SERVER_1_IP
+    string "ntp server 1 ip"
+    default "114.118.7.163"
+
+config PROTOCOL_NTP_SERVER_2_IP
+    string "ntp server 2 ip"
+    default "114.118.7.161"
+
+
+config PROTOCOL_NTP_SERVER_3_IP
+    string "ntp servver 3 ip"
+    default "162.159.200.1"
+
+config PROTOC_NTP_CHECK_TIME_INTERVAL
+    int "ntp_loop check time interval (s)"
+    range 3 600000
+    default 60
+
+endif

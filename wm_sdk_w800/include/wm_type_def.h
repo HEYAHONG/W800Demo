@@ -9,10 +9,12 @@
  */
 #ifndef __WM_TYPE_DEF_H__
 #define __WM_TYPE_DEF_H__
-
+#ifndef __cplusplus
 #ifdef bool
 #undef bool
 #endif
+#endif
+
 #ifdef u8
 #undef u8
 #endif
@@ -52,8 +54,9 @@ typedef unsigned char INT8U;
 #undef INT8S
 #endif
 typedef signed char INT8S;
-
+#ifndef __cplusplus
 typedef unsigned char        bool;
+#endif
 typedef unsigned char        u8;
 typedef signed char          s8;
 typedef unsigned short       u16;

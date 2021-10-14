@@ -982,6 +982,27 @@ ${SDK_ROOT}/lib/w800/libdsp.a
 ${SDK_ROOT}/lib/w800/libwmarch.a  
 )
 
+#添加paho库
+file(GLOB  PAHO_MQTTPACKET_C_FILES lib/MQTT/paho.mqtt.embedded-c/MQTTPacket/src/*.c)
+file(GLOB  PAHO_MQTTCLIENT_C_C_FILES lib/MQTT/paho.mqtt.embedded-c/MQTTClient-C/src/*.c)
+file(GLOB  PAHO_PORT_C_FILES lib/MQTT/*.c)
+list(APPEND PAHO_SRCS
+${PAHO_MQTTPACKET_C_FILES}
+${PAHO_MQTTCLIENT_C_C_FILES}
+${PAHO_PORT_C_FILES}
+)
+
+add_library(PAHO_MQTT STATIC ${PAHO_SRCS})
+target_include_directories(PAHO_MQTT
+PUBLIC lib/MQTT/paho.mqtt.embedded-c/MQTTPacket/src/
+PUBLIC lib/MQTT/paho.mqtt.embedded-c/MQTTClient-C/src/
+PUBLIC lib/MQTT/
+)
+target_compile_definitions(PAHO_MQTT 
+PRIVATE MQTTCLIENT_PLATFORM_HEADER=MQTTFreeRTOS_LWIP.h
+)
+
+
 if(NOT DEFINED MAIN_SRCS)
 	set(MAIN_SRCS ${SDK_ROOT}/app/main.c )
 endif()
@@ -991,6 +1012,56 @@ endif()
 list(APPEND MAIN_SRCS
 
 )
+
+#Kconfig(使用Kconfig进行配置)
+option(USE_KCONFIG "use kconfig" OFF)
+
+if(${USE_KCONFIG})
+
+    add_definitions(" -DUSE_KCONFIG=1 ")
+
+    find_program(PYTHON
+               NAMES python3 python python2
+               REQUIRED
+               )
+    message("python path: ${PYTHON}")
+    #安装依赖
+    execute_process(COMMAND ${PYTHON} -m pip install -r  ${CMAKE_CURRENT_SOURCE_DIR}/requirement.txt
+                      RESULT_VARIABLE PYTHON_INSTALL_RESULT)
+    if(PYTHON_INSTALL_RESULT EQUAL 0)
+    message("install from requirement.txt success")
+    else()
+    message(FATAL_ERROR "install from requirement.txt error")
+    endif()
+
+    #生成config.h
+    add_custom_command(OUTPUT config.h
+                    COMMAND ${PYTHON} -m genconfig --header-path config.h
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    )
+
+
+    if(CMAKE_HOST_WIN32)
+        #menuconfig 目标(windows)
+        add_custom_target(menuconfig cmd.exe /C start cmd.exe /c ${PYTHON} -m menuconfig
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                  USES_TERMINAL
+                  )
+    else()
+        #menuconfig 目标(非windows)
+        add_custom_target(menuconfig  ${PYTHON} -m menuconfig
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                  USES_TERMINAL
+                  )
+    endif()
+
+    #将config.h添加至MAIN_SRCS
+    list(APPEND MAIN_SRCS
+         config.h )
+
+
+endif()
+
 
 if(NOT DEFINED MAIN_INCLUDE_DIRS)
 	set(MAIN_INCLUDE_DIRS ./)
@@ -1009,7 +1080,7 @@ add_definitions(" -DNIMBLE_FTR=1 -DWM_SWD_ENABLE=1 ")
 
 #添加可执行文件
 add_executable(${PROJECT_NAME} ${MAIN_SRCS})
-target_link_libraries(${PROJECT_NAME} SDK_SOURCE_LIB ${SDK_PRECOMPILED_LIBS} )
+target_link_libraries(${PROJECT_NAME} SDK_SOURCE_LIB PAHO_MQTT ${SDK_PRECOMPILED_LIBS} )
 
 #生成bin文件
 add_custom_target(${PROJECT_NAME}.bin ALL

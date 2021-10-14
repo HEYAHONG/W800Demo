@@ -1,0 +1,11 @@
+config CPP_OP_NEW_DEBUG
+    bool "operator new debug"
+    default n
+
+config CPP_OP_DELETE_DEBUG
+    bool "operator delete debug"
+    default n
+
+config CPP_RESET_ON_EXCEPTION
+    bool "reset on exception"
+    default y

@@ -1,0 +1,26 @@
+
+
+menu "CPP"
+
+source "cpp.Kconfig"
+
+endmenu
+
+
+
+menuconfig WIFI_NETWORK
+	bool "Enable WIFI network"
+	default y
+
+if  WIFI_NETWORK
+
+source "wifinetwork.Kconfig"
+
+endif
+	
+
+menu "Protocol"
+
+source "ntp.Kconfig"
+
+endmenu
