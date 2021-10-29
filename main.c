@@ -40,6 +40,6 @@ static void main_task(void *arg)
 void UserMain(void)
 {
     printf("\nMain Started\n");
-    tls_os_task_create(NULL,"main",main_task,NULL,(void *)main_task_stack,sizeof(main_task_stack),1,0);
+    tls_os_task_create(NULL,"main",main_task,NULL,(void *)main_task_stack,sizeof(main_task_stack),32,0);
 }
 
