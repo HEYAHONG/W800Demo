@@ -8,7 +8,7 @@
 extern size_t  tls_mem_get_avail_heapsize();
 
 static const char * TAG="main";
-static uint32_t main_task_stack[1024];
+static  OS_STK  main_task_stack[2048];
 static void main_task(void *arg)
 {
 
@@ -39,6 +39,7 @@ static void main_task(void *arg)
 
 void UserMain(void)
 {
+    printf("\nMain Started\n");
     tls_os_task_create(NULL,"main",main_task,NULL,(void *)main_task_stack,sizeof(main_task_stack),1,0);
 }
 
