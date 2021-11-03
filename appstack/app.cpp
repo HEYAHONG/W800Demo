@@ -54,9 +54,9 @@ void app_init()
     client->start("didiyun.hyhsystem.cn",3333);
     */
 
-    //测试MQTT
-     tls_os_task_create(NULL,"mqtt_test",mqtt_test_task,NULL,(uint8_t *)mqtt_test_task_stack,sizeof(mqtt_test_task_stack),1,0);
 
+    //初始化MQTT
+    MQTT_Init();
 
 }
 

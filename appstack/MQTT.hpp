@@ -1,7 +1,6 @@
 #ifndef MQTT_HPP
 #define MQTT_HPP
 
-void mqtt_test_task(void *arg);
-
+void MQTT_Init();
 
 #endif // MQTT_HPP
