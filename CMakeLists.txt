@@ -19,7 +19,7 @@ set(SDK_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/wm_sdk_w800)
 #设置链接脚本
 set(CMAKE_EXE_LINKER_FLAGS " ${CMAKE_EXE_LINKER_FLAGS} \
 		-T${SDK_ROOT}/ld/w800/gcc_csky.ld \
-        -Wl,-ckmap=${PROJECT_NAME}.map -Wl,--gc-sections -Wl,-zmax-page-size=1024 -Wl,--whole-archive " )
+        -Wl,-ckmap=${PROJECT_NAME}.map -Wl,--gc-sections -Wl,-zmax-page-size=1024 " )
 
 
 
@@ -1079,7 +1079,7 @@ add_definitions(" -DNIMBLE_FTR=1 -DWM_SWD_ENABLE=1 ")
 
 #添加可执行文件
 add_executable(${PROJECT_NAME} ${MAIN_SRCS})
-target_link_libraries(${PROJECT_NAME} SDK_SOURCE_LIB  ${SDK_PRECOMPILED_LIBS} "-Wl,--no-whole-archive" PAHO_MQTT )
+target_link_libraries(${PROJECT_NAME} SDK_SOURCE_LIB   "-Wl,--whole-archive"  ${SDK_PRECOMPILED_LIBS} "-Wl,--no-whole-archive" PAHO_MQTT )
 
 #生成bin文件
 add_custom_target(${PROJECT_NAME}.bin ALL
