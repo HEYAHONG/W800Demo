@@ -5,6 +5,8 @@
 #include "wifinetwork.h"
 #include "ntp.h"
 
+uint8_t macaddr[MACADDR_LENGTH]={0};
+
 extern size_t  tls_mem_get_avail_heapsize();
 
 static const char * TAG="main";
@@ -15,6 +17,7 @@ static void main_task(void *arg)
 #if CONFIG_WIFI_NETWORK == 1
     //初始化WIFINetwork
     wifinetwork_init();
+    tls_get_mac_addr(macaddr);
 #endif // CONFIG_WIFI_NETWORK
 
 #if CONFIG_PROTOCOL_NTP == 1

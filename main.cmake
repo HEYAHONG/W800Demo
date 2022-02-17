@@ -6,7 +6,6 @@ list(APPEND MAIN_SRCS
 main.c
 ntp.c
 wifinetwork.c
-appstack/SocketTcpClient.cpp
 appstack/app.cpp
 appstack/MQTT.cpp
 cpp.cpp

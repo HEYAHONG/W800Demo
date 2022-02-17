@@ -982,22 +982,24 @@ ${SDK_ROOT}/lib/w800/libdsp.a
 ${SDK_ROOT}/lib/w800/libwmarch.a  
 )
 
-#添加paho库
-file(GLOB  PAHO_MQTTPACKET_C_FILES lib/MQTT/paho.mqtt.embedded-c/MQTTPacket/src/*.c)
+#添加SimpleMQTTGateWayStack库
+add_subdirectory(lib/SimpleMQTTGateWayStack/lib)
+
+#添加MQTT移植
 file(GLOB  PAHO_PORT_C_FILES lib/MQTT/*.c)
 list(APPEND PAHO_SRCS
 ${PAHO_MQTTPACKET_C_FILES}
 ${PAHO_PORT_C_FILES}
 )
-
 add_library(PAHO_MQTT STATIC ${PAHO_SRCS})
 target_include_directories(PAHO_MQTT
-PUBLIC lib/MQTT/paho.mqtt.embedded-c/MQTTPacket/src/
 PUBLIC lib/MQTT/
 )
-target_compile_definitions(PAHO_MQTT 
-PRIVATE MQTTCLIENT_PLATFORM_HEADER=MQTTFreeRTOS_LWIP.h
+target_compile_definitions(PAHO_MQTT
+PUBLIC MQTTCLIENT_PLATFORM_HEADER=MQTTFreeRTOS_LWIP.h MQTT_TASK
 )
+target_link_libraries(PAHO_MQTT SMGS)
+
 
 
 if(NOT DEFINED MAIN_SRCS)
@@ -1077,7 +1079,7 @@ add_definitions(" -DNIMBLE_FTR=1 -DWM_SWD_ENABLE=1 ")
 
 #添加可执行文件
 add_executable(${PROJECT_NAME} ${MAIN_SRCS})
-target_link_libraries(${PROJECT_NAME} SDK_SOURCE_LIB PAHO_MQTT ${SDK_PRECOMPILED_LIBS} )
+target_link_libraries(${PROJECT_NAME} SDK_SOURCE_LIB  ${SDK_PRECOMPILED_LIBS} "-Wl,--no-whole-archive" PAHO_MQTT )
 
 #生成bin文件
 add_custom_target(${PROJECT_NAME}.bin ALL
