@@ -969,6 +969,12 @@ ${SDK_ROOT}/src/os/rtos/source/rtostimers.c
 ${SDK_ROOT}/src/os/rtos/source/heap_3.c
 ${SDK_ROOT}/src/os/rtos/wm_osal_rtos.c
 
+#WMARCH部分文件
+${SDK_ROOT}/platform/arch/xt804/libc/libc_port.c
+${SDK_ROOT}/platform/arch/xt804/bsp/board_init.c
+#${SDK_ROOT}/platform/arch/xt804/bsp/isr.c
+${SDK_ROOT}/platform/arch/xt804/bsp/system.c
+${SDK_ROOT}/platform/arch/xt804/bsp/trap_c.c
 )
 
 #使用源代码编译的库文件
@@ -979,7 +985,7 @@ list(APPEND SDK_PRECOMPILED_LIBS
 ${SDK_ROOT}/lib/w800/libwlan.a 
 ${SDK_ROOT}/lib/w800/libbtcontroller.a 
 ${SDK_ROOT}/lib/w800/libdsp.a    
-${SDK_ROOT}/lib/w800/libwmarch.a  
+${CMAKE_CURRENT_SOURCE_DIR}/lib/w800/libwmarch.a  
 )
 
 #添加SimpleMQTTGateWayStack库

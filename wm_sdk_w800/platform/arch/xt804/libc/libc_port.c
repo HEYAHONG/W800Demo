@@ -35,10 +35,16 @@
 int sendchar(int ch)
 {
 	//tls_reg_write32(HR_UART0_INT_MASK, 0x3);
+/*
     if(ch == '\n')
 	{
 		while (tls_reg_read32(HR_UART0_FIFO_STATUS) & 0x3F);
 		tls_reg_write32(HR_UART0_TX_WIN, '\r');
+    }
+*/
+    if(ch=='\0')
+    {
+        return ch;
     }
     while(tls_reg_read32(HR_UART0_FIFO_STATUS) & 0x3F);
     tls_reg_write32(HR_UART0_TX_WIN, (char)ch);
@@ -49,10 +55,16 @@ int sendchar(int ch)
 int sendchar1(int ch)
 {
 	//tls_reg_write32(HR_UART1_INT_MASK, 0x3);
+/*
     if(ch == '\n')
 	{
 		while (tls_reg_read32(HR_UART1_FIFO_STATUS) & 0x3F);
 		tls_reg_write32(HR_UART1_TX_WIN, '\r');
+    }
+*/
+    if(ch=='\0')
+    {
+        return ch;
     }
     while(tls_reg_read32(HR_UART1_FIFO_STATUS) & 0x3F);
     tls_reg_write32(HR_UART1_TX_WIN, (char)ch);
