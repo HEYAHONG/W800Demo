@@ -131,7 +131,7 @@ static void mqtt_receive_task(void *arg)
         SMGS_Device_Context_Init(&device_context);
 
         //填写设备上下文
-        device_context.DeviceName=TAG;
+        device_context.DeviceName=GateWayName;
         device_context.DevicePosNumber=1;
         device_context.DeviceSerialNumber=GateWaySerialNumber;//默认序列号同网关
         device_context.IsOnline=SMGS_IsOnline;
@@ -144,7 +144,7 @@ static void mqtt_receive_task(void *arg)
         SMGS_GateWay_Context_Init(&gateway_context,GateWaySerialNumber,SMGS_MessagePublish);
 
         //填写网关上下文
-        gateway_context.GateWayName=TAG;
+        gateway_context.GateWayName=GateWayName;
         gateway_context.Device_Next=SMGS_Device_Next;
     }
 
