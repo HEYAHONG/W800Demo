@@ -37,6 +37,13 @@ int ThreadStart(Thread* thread, void (*fn)(void*), void* arg)
 
 void MutexInit(Mutex* mutex)
 {
+    if(mutex->sem!=NULL)
+    {
+        /*
+        尝试删除sem。仅针对appstack中Client的写法。
+        */
+        vSemaphoreDelete(mutex->sem);
+    }
     mutex->sem = xSemaphoreCreateMutex();
 }
 
