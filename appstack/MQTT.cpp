@@ -197,6 +197,7 @@ static void mqtt_receive_task(void *arg)
             if(SUCCESS!=MQTTConnect(&mqttclient,&cfg))
             {
                 printf("%s:mqtt connect failed!!\r\n",TAG);
+		mqttserver.disconnect(&mqttserver);
                 continue;
             }
         }
@@ -207,6 +208,7 @@ static void mqtt_receive_task(void *arg)
             if(SUCCESS!=MQTTSubscribe(&mqttclient,subscribestr,QOS0,mqttmessageHandler))
             {
                 printf("%s:mqtt subscribe failed!!\r\n",TAG);
+		mqttserver.disconnect(&mqttserver);
                 continue;
             }
         }
