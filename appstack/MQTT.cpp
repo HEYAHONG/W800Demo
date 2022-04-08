@@ -119,7 +119,7 @@ static bool SMGS_MessagePublish(struct __SMGS_gateway_context_t *ctx,const char 
     return MQTTPublish(&mqttclient,topic,&msg)==0;
 }
 
-
+static char subscribestr[64]= {0};
 static void mqtt_receive_task(void *arg)
 {
     printf("%s:mqtt task start!!\r\n",TAG);
@@ -202,7 +202,7 @@ static void mqtt_receive_task(void *arg)
             }
         }
         {
-            char subscribestr[64]= {0};
+            memset(subscribestr,0,sizeof(subscribestr));
             strcat(subscribestr,GateWaySerialNumber);
             strcat(subscribestr,"/#");
             if(SUCCESS!=MQTTSubscribe(&mqttclient,subscribestr,QOS0,mqttmessageHandler))
