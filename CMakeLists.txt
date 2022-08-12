@@ -137,7 +137,7 @@ if(NOT EXISTS ${WM_TOOL})
     #使用C编译器编译
     find_program(CC NAMES cc gcc REQUIRED)
     message("cc path: ${CC}")
-    execute_process(COMMAND ${CC} -pthread ${SDK_ROOT}/tools/w800/wm_tool.c  -o ${CMAKE_BINARY_DIR}/wm_tool)
+    execute_process(COMMAND ${CC} -pthread  ${SDK_ROOT}/tools/w800/wm_tool.c -lz  -o ${CMAKE_BINARY_DIR}/wm_tool)
     find_program(WM_TOOL
                NAMES wm_tool
                PATHS  ${CMAKE_BINARY_DIR}/ ${SDK_ROOT}/tools/w800/
