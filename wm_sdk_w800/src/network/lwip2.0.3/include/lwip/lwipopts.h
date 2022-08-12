@@ -128,10 +128,14 @@
 
 #define LWIP_HOOK_IP4_ROUTE_SRC         wm_ip4_route_src
 
-//#define LWIP_NETCONN_SEM_PER_THREAD     1
-//#define LWIP_NETCONN_FULLDUPLEX 1
+#define LWIP_NETCONN_SEM_PER_THREAD     1
+#define LWIP_NETCONN_FULLDUPLEX 1
 
 #if LWIP_NETCONN_SEM_PER_THREAD
+#include "wm_osal.h"
+#include "arch/sys_arch.h"
+extern sys_sem_t* sys_lwip_netconn_thread_sem_get();
+
 #define LWIP_NETCONN_THREAD_SEM_ALLOC()  
 #define LWIP_NETCONN_THREAD_SEM_GET()     sys_lwip_netconn_thread_sem_get()
 #define LWIP_NETCONN_THREAD_SEM_FREE()  do { } while(0)

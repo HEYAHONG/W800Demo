@@ -1,5 +1,5 @@
 #!/bin/sh
 ProjName="w800"
 
-mv ./Obj/"$ProjName".elf ./"$ProjName".elf
-mv ./Lst/"$ProjName".map ./"$ProjName".map
+cp ./Obj/"$ProjName".elf ./"$ProjName".elf
+cp ./Lst/"$ProjName".map ./"$ProjName".map

@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "wm_rtc.h"
 #include "stdlib.h"
+#include "wm_include.h"
 
 static const char *TAG="ntp";
 
@@ -63,7 +64,7 @@ static void check_time()
 #endif
             m_tm=*localtime(&ntp_time_cnt);
             //时间有效
-            printf("%s:time %04d/%02d/%02d %02d:%02d:%02d\r\n",TAG,m_tm.tm_year+1900,m_tm.tm_mon+1,m_tm.tm_mday,m_tm.tm_hour,m_tm.tm_min,m_tm.tm_sec);
+            wm_printf("%s:time %04d/%02d/%02d %02d:%02d:%02d\r\n",TAG,m_tm.tm_year+1900,m_tm.tm_mon+1,m_tm.tm_mday,m_tm.tm_hour,m_tm.tm_min,m_tm.tm_sec);
             tls_set_rtc(&m_tm);
         }
     }

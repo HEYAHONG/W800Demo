@@ -36,9 +36,9 @@
 //#define      UART1_TX_TASK_STK_SIZE          256
 //#define      UART1_RX_TASK_STK_SIZE          300
 
-
-extern struct tls_uart_port uart_port[2];
-struct tls_uart uart_st[2];
+static int uart_port_for_at_cmd = TLS_UART_1;
+extern struct tls_uart_port uart_port[TLS_UART_MAX];
+struct tls_uart uart_st[TLS_UART_MAX];
 #if TLS_CONFIG_SOCKET_RAW || TLS_CONFIG_SOCKET_STD
 static u32 uart1_delaytime = 0;
 //static u8 tcptimedelayflag = 0;
@@ -134,7 +134,7 @@ static void uart_send_tx_msg(u8 hostif_mode, struct tls_hostif_tx_msg *tx_msg,
             break;
         case HOSTIF_MODE_UART1_LS:
         case HOSTIF_MODE_UART1_HS:
-            if (uart_st[1].uart_port == NULL)
+            if (uart_st[uart_port_for_at_cmd].uart_port == NULL)
             {
                 free_tx_msg_buffer(tx_msg);
                 tls_mem_free(tx_msg);
@@ -142,7 +142,7 @@ static void uart_send_tx_msg(u8 hostif_mode, struct tls_hostif_tx_msg *tx_msg,
             }
             if (is_event
                 && (hostif_mode != HOSTIF_MODE_UART1_HS
-                    || uart_st[1].cmd_mode != UART_RICMD_MODE))
+                    || uart_st[uart_port_for_at_cmd].cmd_mode != UART_RICMD_MODE))
             {
                 free_tx_msg_buffer(tx_msg);
                 tls_mem_free(tx_msg);
@@ -156,7 +156,7 @@ static void uart_send_tx_msg(u8 hostif_mode, struct tls_hostif_tx_msg *tx_msg,
                 return;
             }
             tx_data->tx_msg = tx_msg;
-            tx_data->uart = &uart_st[1];
+            tx_data->uart = &uart_st[uart_port_for_at_cmd];
             if (tls_wl_task_callback
                 (&wl_task_param_hostif, (start_routine) uart_tx, tx_data, 0))
             {
@@ -174,20 +174,27 @@ static void uart_send_tx_msg(u8 hostif_mode, struct tls_hostif_tx_msg *tx_msg,
 
 static void uart_get_uart1_port(struct tls_uart_port **uart1_port)
 {
-    *uart1_port = uart_st[1].uart_port;
+	if (uart_port_for_at_cmd <= TLS_UART_5)
+	{
+    	*uart1_port = uart_st[uart_port_for_at_cmd].uart_port;
+	}
+	else
+	{
+		*uart1_port = uart_st[TLS_UART_1].uart_port;
+	}
 }
 
 static void uart_set_uart1_mode(u32 cmd_mode)
 {
-    uart_st[1].cmd_mode = cmd_mode;
+    uart_st[uart_port_for_at_cmd].cmd_mode = cmd_mode;
     if (UART_TRANS_MODE == cmd_mode)
     {
-        tls_uart_set_fc_status(uart_st[1].uart_port->uart_no,
+        tls_uart_set_fc_status(uart_st[uart_port_for_at_cmd].uart_port->uart_no,
                                TLS_UART_FLOW_CTRL_HARDWARE);
     }
     else
     {
-        tls_uart_set_fc_status(uart_st[1].uart_port->uart_no,
+        tls_uart_set_fc_status(uart_st[uart_port_for_at_cmd].uart_port->uart_no,
                                TLS_UART_FLOW_CTRL_NONE);
     }
 }
@@ -209,7 +216,7 @@ static void uart_set_uart0_mode(u32 cmd_mode)
 
 static void uart_set_uart1_sock_param(u16 sksnd_cnt, bool rx_idle)
 {
-    uart_st[1].sksnd_cnt = sksnd_cnt;
+    uart_st[uart_port_for_at_cmd].sksnd_cnt = sksnd_cnt;
     //uart_st[1].rx_idle = rx_idle;
 }
 
@@ -228,7 +235,7 @@ void tls_uart_init(void)
     struct tls_hostif *hif = tls_get_hostif();
     struct tls_param_uart uart_cfg;
 
-    memset(uart_st, 0, 2 * sizeof(struct tls_uart));
+    memset(uart_st, 0, TLS_UART_MAX* sizeof(struct tls_uart));
 #if TLS_CONFIG_CMD_USE_RAW_SOCKET
     memset(sockrecvmit, 0, TLS_MAX_NETCONN_NUM);
 #else
@@ -274,10 +281,10 @@ void tls_uart_init(void)
         uart_opts.paritytype = (enum TLS_UART_PMODE) uart_cfg.parity;
         uart_opts.stopbits = (enum TLS_UART_STOPBITS) uart_cfg.stop_bits;
 
-        if (WM_SUCCESS != tls_uart_port_init(TLS_UART_1, &uart_opts, 0))
+        if (WM_SUCCESS != tls_uart_port_init(uart_port_for_at_cmd, &uart_opts, 0))
             return;
-        tls_uart_tx_callback_register(TLS_UART_1, uart_tx_sent_callback);
-        uart = tls_uart_open(TLS_UART_1, TLS_UART_MODE_INT);
+        tls_uart_tx_callback_register(uart_port_for_at_cmd, uart_tx_sent_callback);
+        uart = tls_uart_open(uart_port_for_at_cmd, TLS_UART_MODE_INT);
         if (NULL == uart)
             return;
 
@@ -298,10 +305,10 @@ void tls_uart_init(void)
         uart_opts.flow_ctrl = (enum TLS_UART_FLOW_CTRL_MODE) uart_cfg.flow;
         uart_opts.paritytype = (enum TLS_UART_PMODE) uart_cfg.parity;
         uart_opts.stopbits = (enum TLS_UART_STOPBITS) uart_cfg.stop_bits;
-        if (WM_SUCCESS != tls_uart_port_init(TLS_UART_1, &uart_opts, 0))
+        if (WM_SUCCESS != tls_uart_port_init(uart_port_for_at_cmd, &uart_opts, 0))
             return;
-        tls_uart_tx_callback_register(TLS_UART_1, uart_tx_sent_callback);
-        uart = tls_uart_open(TLS_UART_1, TLS_UART_MODE_INT);
+        tls_uart_tx_callback_register(uart_port_for_at_cmd, uart_tx_sent_callback);
+        uart = tls_uart_open(uart_port_for_at_cmd, TLS_UART_MODE_INT);
         if (NULL == uart)
             return;
 #if TLS_CONFIG_SOCKET_RAW || TLS_CONFIG_SOCKET_STD
@@ -355,7 +362,7 @@ static s16 tls_uart0_task_rx_cb(u16 len, void *p)
 
 s16 tls_uart1_task_rx_cb(u16 len, void *p)
 {
-    struct tls_uart *uart = &uart_st[1];
+    struct tls_uart *uart = &uart_st[uart_port_for_at_cmd];
 
 
     if ((UART_TRANS_MODE == uart->cmd_mode)
@@ -462,6 +469,24 @@ void tls_uart_1_tx_task(void *data)
 }
 #endif
 
+void tls_uart_set_at_cmd_port(int at_cmd_port)
+{
+	if (at_cmd_port && (at_cmd_port < TLS_UART_MAX))
+	{
+		uart_port_for_at_cmd = at_cmd_port;
+	}
+	else
+	{
+		uart_port_for_at_cmd = TLS_UART_1;
+	}
+}
+
+
+int tls_uart_get_at_cmd_port(void)
+{
+	return uart_port_for_at_cmd;
+}
+
 struct tls_uart *tls_uart_open(u32 uart_no, TLS_UART_MODE_T uart_mode)
 {
     struct tls_uart *uart;
@@ -469,16 +494,16 @@ struct tls_uart *tls_uart_open(u32 uart_no, TLS_UART_MODE_T uart_mode)
 //  void * rx_msg  = NULL;
     if (uart_no == TLS_UART_0)
     {
-        uart = &uart_st[0];
+        uart = &uart_st[uart_no];
         memset(uart, 0, sizeof(struct tls_uart));
-        uart->uart_port = &uart_port[0];
+        uart->uart_port = &uart_port[uart_no];
         tls_uart_rx_callback_register(uart_no, tls_uart0_task_rx_cb, NULL);
     }
-    else if (uart_no == TLS_UART_1)
+    else if (uart_no <= TLS_UART_5)
     {
-        uart = &uart_st[1];
+        uart = &uart_st[uart_no];
         memset(uart, 0, sizeof(struct tls_uart));
-        uart->uart_port = &uart_port[1];
+        uart->uart_port = &uart_port[uart_no];
         tls_uart_rx_callback_register(uart_no, tls_uart1_task_rx_cb, NULL);
     }
     else
@@ -807,7 +832,9 @@ static void parse_atcmd_line(struct tls_uart *uart)
 //  TLS_DBGPRT_INFO("A2 %d, %d\r\n", recv->tail, recv->head);
 }
 #if TLS_CONFIG_SOCKET_RAW || TLS_CONFIG_SOCKET_STD
-char uart_net_send_data[UART_NET_SEND_DATA_SIZE];
+//char uart_net_send_data[UART_NET_SEND_DATA_SIZE];
+char *uart_net_send_data = NULL;
+
 
 void uart_net_send(struct tls_uart *uart, u32 head, u32 tail, int count)
 {
@@ -820,6 +847,17 @@ void uart_net_send(struct tls_uart *uart, u32 head, u32 tail, int count)
     int remaincount = count;
 
     static u16 printfFreq = 0;
+
+	if (uart_net_send_data == NULL)
+	{
+		uart_net_send_data = tls_mem_alloc(UART_NET_SEND_DATA_SIZE * sizeof(char));
+		if (uart_net_send_data == NULL)
+		{
+			return;
+		}
+		memset(uart_net_send_data, 0, (UART_NET_SEND_DATA_SIZE * sizeof(char)));
+	}
+
     //printf("uart_net_send count %d\n", count);
 RESENDBUF:
     if (remaincount >= UART_NET_SEND_DATA_SIZE)
@@ -924,6 +962,7 @@ RESENDBUF:
     }
 }
 #endif
+#if !TLS_CONFIG_CMD_NET_USE_LIST_FTR	
 static int cache_tcp_recv(struct tls_hostif_tx_msg *tx_msg)
 {
     struct tls_uart_circ_buf *precvmit =
@@ -980,7 +1019,7 @@ static int cache_tcp_recv(struct tls_hostif_tx_msg *tx_msg)
 
     return copylen;
 }
-
+#endif
 #if 0
 static int uart_tcp_recv(struct tls_uart_port *port,
                          struct tls_hostif_tx_msg *tx_msg)
@@ -1224,7 +1263,8 @@ static int data_loop(struct tls_uart *uart,
 }
 
 #define MAX_RICMD_LENGTH      200
-u8 ricmd_buffer[MAX_RICMD_LENGTH + 8];
+//u8 ricmd_buffer[MAX_RICMD_LENGTH + 8];
+u8 *ricmd_buffer = NULL;
 
 static int cmd_loop(struct tls_uart *uart,
                     int numbytes, struct tls_uart_circ_buf *recv)
@@ -1232,6 +1272,16 @@ static int cmd_loop(struct tls_uart *uart,
     unsigned cbytes = uart->ricmd_info.cbytes;
     unsigned procbytes = 0;
     unsigned char c;
+
+	if (ricmd_buffer == NULL)
+	{
+		ricmd_buffer = tls_mem_alloc(MAX_RICMD_LENGTH + 8);
+		if (ricmd_buffer == NULL)
+		{
+			return -1;
+		}
+		memset(ricmd_buffer, 0, (MAX_RICMD_LENGTH + 8));
+	}
 
     while (procbytes < numbytes)
     {

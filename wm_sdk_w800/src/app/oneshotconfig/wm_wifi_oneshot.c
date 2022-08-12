@@ -138,7 +138,7 @@ extern void tls_wl_plcp_stop(void);
 extern void tls_wl_plcp_start(void);
 
 
-#if (WM_BLE_INCLUDED == CFG_ON || WM_NIMBLE_INCLUDED == CFG_ON)
+#if TLS_CONFIG_BLE_WIFI_ONESHOT
 #include "wm_bt_def.h"
 extern tls_bt_status_t tls_ble_wifi_cfg_init(void);
 extern tls_bt_status_t tls_ble_wifi_cfg_deinit(int reason);
@@ -457,21 +457,33 @@ static void wifi_change_chanel(u32 chanid, u8  bandwidth)
 #if TLS_CONFIG_UDP_LSD_SPECIAL
 static void oneshot_lsd_finish(void)
 {
-	printf("lsd connect, ssid:%s, pwd:%s, time:%d\n", lsd_param.ssid, lsd_param.pwd, (tls_os_get_time()-oneshottime)*1000/HZ);
-	
-    tls_netif_add_status_event(wm_oneshot_netif_status_event);
-    if (tls_oneshot_if_use_bssid(lsd_param.ssid, &lsd_param.ssid_len, lsd_param.bssid))
-    {
-		ONESHOT_DBG("connect_by_ssid_bssid\n");
-		tls_wifi_set_oneshot_flag(0);
-		tls_wifi_connect_by_ssid_bssid(lsd_param.ssid, lsd_param.ssid_len, lsd_param.bssid, lsd_param.pwd, lsd_param.pwd_len);
-    }
-    else
-    {
-		ONESHOT_DBG("connect_by_ssid\n");
-		tls_wifi_set_oneshot_flag(0);
-		tls_wifi_connect(lsd_param.ssid, lsd_param.ssid_len, lsd_param.pwd, lsd_param.pwd_len);
-    }
+	if (lsd_param)
+	{
+		printf("lsd connect, ssid:%s, pwd:%s, time:%d\n", lsd_param->ssid, lsd_param->pwd, (tls_os_get_time()-oneshottime)*1000/HZ);
+		
+	    tls_netif_add_status_event(wm_oneshot_netif_status_event);
+	    if (tls_oneshot_if_use_bssid(lsd_param->ssid, &lsd_param->ssid_len, lsd_param->bssid))
+	    {
+			ONESHOT_DBG("connect_by_ssid_bssid\n");
+			memcpy(gucssidData, lsd_param->ssid, lsd_param->ssid_len);
+			gucssidData[lsd_param->ssid_len] = '\0';
+			memcpy(gucbssidData, lsd_param->bssid, 6);
+			memcpy(gucpwdData, lsd_param->pwd, lsd_param->pwd_len);	
+			gucpwdData[lsd_param->pwd_len] = '\0';
+			tls_wifi_set_oneshot_flag(0);
+			tls_wifi_connect_by_ssid_bssid(gucssidData, strlen((char *)gucssidData), gucbssidData, gucpwdData, strlen((char *)gucpwdData));
+	    }
+	    else
+	    {
+			ONESHOT_DBG("connect_by_ssid\n");
+			memcpy(gucssidData, lsd_param->ssid, lsd_param->ssid_len);
+			gucssidData[lsd_param->ssid_len] = '\0';
+			memcpy(gucpwdData, lsd_param->pwd, lsd_param->pwd_len);	
+			gucpwdData[lsd_param->pwd_len] = '\0';		
+			tls_wifi_set_oneshot_flag(0);
+			tls_wifi_connect(gucssidData, strlen((char *)gucssidData), gucpwdData, strlen((char *)gucpwdData));
+	    }
+	}
 }
 
 int tls_wifi_lsd_oneshot_special(u8 *data, u16 data_len)
@@ -496,14 +508,17 @@ int tls_wifi_lsd_oneshot_special(u8 *data, u16 data_len)
 	}
 	else if(ret == LSD_ONESHOT_COMPLETE)
 	{
-		if(lsd_param.user_len > 0)
+		if (lsd_param)
 		{
-			tls_wifi_set_oneshot_customdata(lsd_param.user_data);
+			if(lsd_param->user_len > 0)
+			{
+				tls_wifi_set_oneshot_customdata(lsd_param->user_data);
 
-		}
-		else if(lsd_param.ssid_len > 0)
-		{
-			oneshot_lsd_finish();
+			}
+			else if(lsd_param->ssid_len > 0)
+			{
+				oneshot_lsd_finish();
+			}
 		}
 	}
 	return 0;
@@ -1588,7 +1603,7 @@ void tls_wifi_start_oneshot(void)
 int tls_wifi_set_oneshot_flag(u8 flag)
 {
     bool enable = FALSE;
-#if (WM_BLE_INCLUDED == CFG_ON || WM_NIMBLE_INCLUDED == CFG_ON)
+#if TLS_CONFIG_BLE_WIFI_ONESHOT
 	tls_bt_status_t status;
     if (flag > 4)
 #else
@@ -1623,7 +1638,7 @@ int tls_wifi_set_oneshot_flag(u8 flag)
 			tls_wifi_set_listen_mode(0);
 			tls_wl_plcp_stop();
 		}
-#if (WM_BLE_INCLUDED == CFG_ON || WM_NIMBLE_INCLUDED == CFG_ON)
+#if TLS_CONFIG_BLE_WIFI_ONESHOT
 		else if (4 == flag)
 		{
 			status = tls_ble_wifi_cfg_init();
@@ -1663,8 +1678,7 @@ int tls_wifi_set_oneshot_flag(u8 flag)
 			}
 #endif
 		}
-#if (WM_BLE_INCLUDED == CFG_ON || WM_NIMBLE_INCLUDED == CFG_ON)
-
+#if TLS_CONFIG_BLE_WIFI_ONESHOT
 		else if (4 == guconeshotflag)
 		{
 			status = tls_ble_wifi_cfg_deinit(1);

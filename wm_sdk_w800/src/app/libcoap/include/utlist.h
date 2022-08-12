@@ -25,13 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UTLIST_H
 
 #define UTLIST_VERSION 1.9.9
-#ifdef WM_W600
-#ifndef assert
-#define assert(n)
-#endif
-#else
 #include <assert.h>
-#endif
 /*
  * This file contains macros to manipulate singly and doubly-linked lists.
  *

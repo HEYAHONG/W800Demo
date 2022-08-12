@@ -21,7 +21,7 @@
 
 
 /*ADC Result*/
-#define ADC_RESULT_MASK					(0x3FFFC)
+#define ADC_RESULT_MASK					(0x3FFFF)
 #define ADC_RESULT_VAL(n)				((n)&ADC_RESULT_MASK)
 
 /*ADC_ANALOG_CTRL*/
@@ -277,11 +277,11 @@ int adc_get_inputVolt(u8 channel);
  *
  * @param[in]      	None
  *
- * @retval          voltage
+ * @retval          voltage (mV)
  *
  * @note            None
  */
-u16 adc_get_interVolt(void);
+u32 adc_get_interVolt(void);
 
 /**
  * @brief           This function is used to read temperature.

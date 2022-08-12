@@ -32,55 +32,60 @@
 #include <csi_config.h>
 #include "wm_regs.h"
 
+static unsigned char printf_port = 0;
+//0 uart0; 1: uart1; other: close;
+unsigned char get_printf_port(void)
+{
+    return printf_port;
+}
+
+void set_printf_port(unsigned char port)
+{
+    if(port == 0)
+    {
+        printf_port = 0;
+    }
+    else if(port == 1)
+    {
+        printf_port = 1;
+    }
+    else
+    {
+        printf_port = 0xff;
+    }
+}
+
 int sendchar(int ch)
 {
 	//tls_reg_write32(HR_UART0_INT_MASK, 0x3);
-/*
-    if(ch == '\n')
+	if (printf_port == 0)
 	{
-		while (tls_reg_read32(HR_UART0_FIFO_STATUS) & 0x3F);
-		tls_reg_write32(HR_UART0_TX_WIN, '\r');
-    }
-*/
-    if(ch=='\0')
-    {
-        return ch;
-    }
-    while(tls_reg_read32(HR_UART0_FIFO_STATUS) & 0x3F);
-    tls_reg_write32(HR_UART0_TX_WIN, (char)ch);
+//		if(ch == '\n')
+//		{
+//			while (tls_reg_read32(HR_UART0_FIFO_STATUS) & 0x3F);
+//			tls_reg_write32(HR_UART0_TX_WIN, '\r');
+//	    }
+	    while(tls_reg_read32(HR_UART0_FIFO_STATUS) & 0x3F);
+	    tls_reg_write32(HR_UART0_TX_WIN, (char)ch);
+	}
+	else if (printf_port == 1)
+	{
+//		if(ch == '\n')
+//		{
+//			while (tls_reg_read32(HR_UART1_FIFO_STATUS) & 0x3F);
+//			tls_reg_write32(HR_UART1_TX_WIN, '\r');
+//	    }
+		while(tls_reg_read32(HR_UART1_FIFO_STATUS) & 0x3F);
+		tls_reg_write32(HR_UART1_TX_WIN, (char)ch);
+	}
     //tls_reg_write32(HR_UART0_INT_MASK, 0x0);
-    return ch;
-}
-
-int sendchar1(int ch)
-{
-	//tls_reg_write32(HR_UART1_INT_MASK, 0x3);
-/*
-    if(ch == '\n')
-	{
-		while (tls_reg_read32(HR_UART1_FIFO_STATUS) & 0x3F);
-		tls_reg_write32(HR_UART1_TX_WIN, '\r');
-    }
-*/
-    if(ch=='\0')
-    {
-        return ch;
-    }
-    while(tls_reg_read32(HR_UART1_FIFO_STATUS) & 0x3F);
-    tls_reg_write32(HR_UART1_TX_WIN, (char)ch);
-    //tls_reg_write32(HR_UART1_INT_MASK, 0x0);
     return ch;
 }
 
 int fputc(int ch, FILE *stream)
 {
     (void)stream;
-#if USE_UART0_PRINT
     sendchar(ch);
-#else
-    sendchar1(ch);
-#endif
-
     return 0;
 }
 
@@ -101,10 +106,14 @@ int _write_r(void *r, int file, const void *ptr, size_t len)
 	char *p;
 
 	p = (char*) ptr;
-	
-	for (i = 0; i < len; i++) 
+	for (i = 0; i < len; i++)
 	{
-		(void)fputc(*p++, r); /* r: ignore warning */
+	    if(i+1==len && p[i]=='\0')
+        {
+           //忽略末尾NULL
+           break;
+        };
+		(void)fputc(*(p++), r); /* r: ignore warning */
 	}
 	return len;
 }
@@ -154,7 +163,7 @@ static int __ip2str(unsigned char v4v6, unsigned int *inuint, char *outtxt)
                 l = m & 0xf;
                 if (h > 9)
                     outtxt[j++] = 'A' + h - 10;
-                else 
+                else
                     outtxt[j++]= '0' + h;
                 if (l > 9)
                     outtxt[j++] = 'A' + l - 10;
@@ -182,7 +191,7 @@ static int __mac2str(unsigned char *inchar, char *outtxt)
         lbit = *(inchar + i ) & 0x0f;
         if (hbit > 9)
             outtxt[3 * i] = 'A' + hbit - 10;
-        else 
+        else
             outtxt[3 * i]= '0' + hbit;
         if (lbit > 9)
             outtxt[3 * i + 1] = 'A' + lbit - 10;
@@ -461,7 +470,7 @@ int wm_vsscanf(const char *buffer, const char *format, va_list ap)
 	case 'u':		/* Unsigned decimal integer */
 	  base = 10; sign = 0;
 	  goto scan_int;
-	  
+
 	case 'x':		/* Hexadecimal integer */
 	case 'X':
 	  base = 16; sign = 0;
@@ -510,7 +519,7 @@ int wm_vsscanf(const char *buffer, const char *format, va_list ap)
 	    }
 	  }
 	  break;
-	  
+
 	case 'c':               /* Character */
           width = (flags & FL_WIDTH) ? width : 1; /* Default width == 1 */
           sarg = va_arg(ap, char *);
@@ -567,7 +576,7 @@ int wm_vsscanf(const char *buffer, const char *format, va_list ap)
 	    }
 	  }
 	  break;
-	  
+
 	case '[':		/* Character range */
 	  sarg = va_arg(ap, char *);
 	  state = st_match_init;
@@ -588,7 +597,7 @@ int wm_vsscanf(const char *buffer, const char *format, va_list ap)
 	}
       }
       break;
-    
+
     case st_match_init:		/* Initial state for %[ match */
       if ( ch == '^' && !(flags & FL_INV) ) {
 	matchinv = 1;
@@ -597,7 +606,7 @@ int wm_vsscanf(const char *buffer, const char *format, va_list ap)
 	state = st_match;
       }
       break;
-      
+
     case st_match:		/* Main state for %[ match */
       if ( ch == ']' ) {
 	goto match_run;
@@ -608,7 +617,7 @@ int wm_vsscanf(const char *buffer, const char *format, va_list ap)
 	set_bit(matchmap, (unsigned char)ch);
       }
       break;
-      
+
     case st_match_range:		/* %[ match after - */
       if ( ch == ']' ) {
 	set_bit(matchmap, (unsigned char)'-'); /* - was last character */
@@ -1510,7 +1519,7 @@ __attribute__((weak)) int __cskyvscanfsscanf(const char *str, const char *format
 	va_start(args,format);
 	i = wm_vsscanf(str, format, args);
 	va_end(args);
-	
+
 	return i;
 }
 
@@ -1559,6 +1568,20 @@ __attribute__((weak)) void __assert_fail(const char *file,
 	   failedexpr, file, line,
 	   func ? ", function: " : "", func ? func : "");
     while(1);
+}
+
+/*For CPP type used, you first call this function in main entry*/
+extern int __dtor_end__;
+extern int __ctor_end__;
+extern int __ctor_start__;
+typedef void (*func_ptr)(void);
+__attribute__((weak)) void cxx_system_init(void)
+{
+    func_ptr *p;
+    for (p = (func_ptr *)&__ctor_end__ -1; p >= (func_ptr *)&__ctor_start__; p--)
+    {
+        (*p)();
+    }
 }
 #endif
 

@@ -9,13 +9,7 @@
  * All rights reserved.
  *
  ***************************************************************************/
-#ifndef WM_W600
 #include <assert.h>
-#else
-#ifndef assert
-#define assert(n)
-#endif
-#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

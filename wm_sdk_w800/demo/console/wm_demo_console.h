@@ -14,6 +14,7 @@
 #include "wm_include.h"
 #include "wm_watchdog.h"
 #include "wm_config.h"
+#include "wm_ram_config.h"
 
 /*****************************************************************
 	EXTERN FUNC
@@ -62,6 +63,7 @@ extern int sck_s_send_data_demo(void *, ...);
 extern int CreateMCastDemoTask(void *, ...);
 extern int adc_input_voltage_demo(void *, ...);
 extern int adc_chip_temperature_demo(void*,...);
+extern int adc_power_voltage_demo(void *, ...);
 extern int sd_card_test(void *, ...);
 
 extern int demo_wps_pbc(void *, ...);
@@ -72,7 +74,7 @@ extern int demo_wps_get_pin(void *, ...);
 extern int demo_iperf_auto_test(void *, ...);
 extern int CreateSSLServerDemoTask(void *, ...);
 extern int lwsDemoTest(void *, ...);
-extern int tls_i2s_io_init(void);
+extern int tls_i2s_io_init(void *, ...);
 extern int tls_i2s_demo(void *, ...);
 extern int i2c_demo(void *, ...);
 extern int scan_demo(void *, ...);
@@ -83,6 +85,12 @@ extern int fatfs_test(void *, ...);
 extern int mbedtls_demo(void *, ...);
 
 extern int dsp_demo(void *,...);
+
+#if (TLS_CONFIG_BLE == CFG_ON)
+extern int demo_ble_config(void *, ...); /*wifi connection by ble configuration*/
+#endif
+
+
 
 #if DEMO_BT
 extern int demo_bt_enable(void *, ...);
@@ -107,6 +115,10 @@ extern int demo_bt_app_off(void *, ...);
 #if DEMO_TOUCHSENSOR
 extern int demo_touchsensor(void *, ...);
 #endif
+#if DEMO_LCD
+extern void lcd_test(void);
+#endif
+extern int avoid_copy_entry(void *, ...);
 
 /*****************************************************************
 		LOCAL FUNC
@@ -153,6 +165,9 @@ struct demo_console_info_t  console_tbl[] =
     {"t-oneshot",     demo_oneshot,  0, 0, "Test Oneshot  configuration"},
     //	{"t-socketcfg",  demo_socket_config, 0, 0, "Test socket configuration"},
     {"t-webcfg",      demo_webserver_config, 0, 0, "Test web server configuration"},
+#if (TLS_CONFIG_BLE == CFG_ON) 
+	{"t-blecfg",      demo_ble_config, 0, 0, "Test ble mode configuration"},
+#endif
 #endif
 
 #if DEMO_APSTA
@@ -239,6 +254,7 @@ struct demo_console_info_t  console_tbl[] =
 #if DEMO_ADC
     {"t-adctemp",  adc_chip_temperature_demo,   0x0,    0, "(ADC)Test chip temperature"},
     {"t-adcvolt",  adc_input_voltage_demo,   0x1,    1, "(ADC)Test input voltage,0-PA1(chan0), 1-PA4(chan1),8-different"},    
+	{"t-adcpower", adc_power_voltage_demo, 0x0, 0, "(ADC)Sample power supply voltage"},
 #endif
 
 #if DEMO_7816
@@ -339,6 +355,14 @@ struct demo_console_info_t  console_tbl[] =
 	{"t-touch", demo_touchsensor, 0x1, 1, "Test Touch sensor function,0:all, 1:touch sensor 1... 15:touch sensor 15"},
 #endif
 
+#if DEMO_LCD
+	{"t-lcd", (void *)lcd_test, 0, 0, "Test LCD output, eg: t-lcd"},
+#endif
+
+#if DEMO_AVOID_COPY
+	{"t-avoidcopy", avoid_copy_entry, 0x0, 0, "Test Avoid Copy function"},
+#endif
+
     //控制台上显示的最后一个命令，如果要让命令显示在控制台上，需要放在该行的上面
     {"demohelp", 	demo_console_show_help,	0, 0,	"Display Help information"},
     //下面的命令用于内部测试，不显示在控制台上
@@ -395,6 +419,7 @@ static int demo_console_show_help(void *p, ...)
 
 int demo_sys_reset(void *p, ...)
 {
+	tls_sys_set_reboot_reason(REBOOT_REASON_ACTIVE);
     tls_sys_reset();
     return WM_SUCCESS;
 }

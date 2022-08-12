@@ -91,14 +91,7 @@
 */
 #include "FreeRTOS.h"
 #include "task.h"
-#ifndef pdMS_TO_TICKS
-#include "FreeRTOS.h"
-#define pdMS_TO_TICKS(x) ((x)/((1000/configTICK_RATE_HZ)))
-#endif // pdMS_TO_TICKS
 
-#ifndef TickType_t
-#define TickType_t portTickType
-#endif // TickType_t
 
 #ifndef __unused
 #define __unused  __attribute__((unused))

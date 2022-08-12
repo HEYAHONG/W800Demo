@@ -869,14 +869,14 @@ tcp_new_port(void)
   u8_t i;
   u16_t n = 0;
   struct tcp_pcb *pcb;
-  static u8 firstflag = 1;
+//  u32_t value = 0;
 
-  if(firstflag)
+  if (tcp_port == TCP_LOCAL_PORT_RANGE_START)
   {
-    extern int tls_wl_get_isr_count(void);  
-    firstflag = 0;
-    srand(tls_wl_get_isr_count() + tcp_port);    /*Using Wi-Fi Rx dataCnt as Random Seed*/
-    tcp_port = TCP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND());  
+	  extern unsigned int tls_random_seed_generation(void );
+	  tcp_port = (u16_t)tls_random_seed_generation();
+	  srand(tcp_port);
+	  tcp_port = TCP_ENSURE_LOCAL_PORT_RANGE(LWIP_RAND()); 
   }
 
 

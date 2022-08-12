@@ -8,6 +8,7 @@ extern "C"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stdint.h"
+#include "wm_include.h"
 
 #define MACADDR_LENGTH 6
 

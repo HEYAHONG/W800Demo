@@ -10,11 +10,26 @@
 #include "wm_config.h"
 #include "wm_socket.h"
 
+
 const void * const null_pointer = (void *)0;
 OS_STK         lwip_task_stk[LWIP_TASK_MAX*LWIP_STK_SIZE];
 u8_t            lwip_task_priopity_stack[LWIP_TASK_MAX];
 //OS_TCB          lwip_task_tcb[LWIP_TASK_MAX];
 #if LWIP_NETCONN_SEM_PER_THREAD
+#if TLS_OS_FREERTOS
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "wm_type_def.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "rtosqueue.h"
+#include "semphr.h"
+#include "rtostimers.h"
+#include "FreeRTOSConfig.h"
+#endif
+
 sys_sem_t g_lwip_netconn_thread_sems[64];
 sys_sem_t* sys_lwip_netconn_thread_sem_get()
 {
@@ -265,22 +280,21 @@ void sys_mbox_post(sys_mbox_t *mbox, void *msg)
 err_t sys_mbox_trypost(sys_mbox_t *mbox, void *msg)
 {
     u8_t     err;
-//    u8_t  i=0; 
+    u8_t  i=0; 
 
     if(msg == NULL ) 
         msg = (void*)null_pointer;  
 
-    /* try 10 times 
-    while (i < 10)*/{
+    /* try 10 times */
+    while (i < 10){
        // err = OSQPost(mbox, msg);
 	err = tls_os_queue_send(*mbox, msg, 0);
         if(err == TLS_OS_SUCCESS)
             return ERR_OK;
-        //i++;
+        i++;
         //OSTimeDly(5);
-        //tls_os_time_delay(1);
+        tls_os_time_delay(1);
     }
-
     return ERR_ABRT;    
 }
 

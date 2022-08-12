@@ -354,7 +354,7 @@ static err_t ethernetif_igmp_mac_filter(struct netif *netif,
 }
 #endif
 
-static u8 host_name[64] = {0};
+static char host_name[64] = {0};
 /**
  * Should be called at the beginning of the program to set up the
  * network interface. It calls the function low_level_init() to do the

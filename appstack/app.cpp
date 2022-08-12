@@ -21,7 +21,7 @@ void app_init()
             strcat(macaddrstr,buff);
         }
 
-        printf("%s:our mac is %s\r\n",TAG,macaddrstr);
+        wm_printf("%s:our mac is %s\r\n",TAG,macaddrstr);
     }
 
     //初始化MQTT

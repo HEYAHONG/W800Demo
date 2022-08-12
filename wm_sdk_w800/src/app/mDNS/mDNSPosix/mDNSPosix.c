@@ -133,13 +133,7 @@
 #include "mDNSClientAPI.h"           // Defines the interface provided to the client layer above
 #include "mDNSPlatformFunctions.h"   // Defines the interface to the supporting layer below
 #include "mDNSPosix.h"				 // Defines the specific types needed to run mDNS on this platform
-#ifdef WM_W600
-#ifndef assert
-#define assert(n)
-#endif
-#else
 #include <assert.h>
-#endif
 //#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>

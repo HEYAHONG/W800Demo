@@ -760,7 +760,7 @@ int HTTPWrapperSSLClose(tls_ssl_t *ssl, int s)
 }
 #elif TLS_CONFIG_USE_MBEDTLS
 
-static bool mbedtls_demo_inited = FALSE;
+//static bool mbedtls_demo_inited = FALSE;
 
 #if MBEDTLS_DEMO_USE_CERT
 static const char mbedtls_demos_pem[] =                                 \

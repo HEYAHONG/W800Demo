@@ -6,13 +6,28 @@
     <VirtualDirectory Name="os">
       <VirtualDirectory Name="rtos">
         <VirtualDirectory Name="include">
+          <File Name="../../../../../../../src/os/rtos/include/atomic.h">
+            <FileOption/>
+          </File>
           <File Name="../../../../../../../src/os/rtos/include/croutine.h">
+            <FileOption/>
+          </File>
+          <File Name="../../../../../../../src/os/rtos/include/deprecated_definitions.h">
+            <FileOption/>
+          </File>
+          <File Name="../../../../../../../src/os/rtos/include/event_groups.h">
             <FileOption/>
           </File>
           <File Name="../../../../../../../src/os/rtos/include/FreeRTOS.h">
             <FileOption/>
           </File>
           <File Name="../../../../../../../src/os/rtos/include/FreeRTOSConfig.h">
+            <FileOption/>
+          </File>
+          <File Name="../../../../../../../src/os/rtos/include/message_buffer.h">
+            <FileOption/>
+          </File>
+          <File Name="../../../../../../../src/os/rtos/include/mpu_prototypes.h">
             <FileOption/>
           </File>
           <File Name="../../../../../../../src/os/rtos/include/mpu_wrappers.h">
@@ -42,6 +57,12 @@
           <File Name="../../../../../../../src/os/rtos/include/StackMacros.h">
             <FileOption/>
           </File>
+          <File Name="../../../../../../../src/os/rtos/include/stack_macros.h">
+            <FileOption/>
+          </File>
+          <File Name="../../../../../../../src/os/rtos/include/stream_buffer.h">
+            <FileOption/>
+          </File>
           <File Name="../../../../../../../src/os/rtos/include/task.h">
             <FileOption/>
           </File>
@@ -60,6 +81,9 @@
           <File Name="../../../../../../../src/os/rtos/source/croutine.c">
             <FileOption/>
           </File>
+          <File Name="../../../../../../../src/os/rtos/source/event_groups.c">
+            <FileOption/>
+          </File>
           <File Name="../../../../../../../src/os/rtos/source/heap_2.c">
             <FileOption/>
           </File>
@@ -72,10 +96,13 @@
           <File Name="../../../../../../../src/os/rtos/source/queue.c">
             <FileOption/>
           </File>
-          <File Name="../../../../../../../src/os/rtos/source/rtostimers.c">
+          <File Name="../../../../../../../src/os/rtos/source/stream_buffer.c">
             <FileOption/>
           </File>
           <File Name="../../../../../../../src/os/rtos/source/tasks.c">
+            <FileOption/>
+          </File>
+          <File Name="../../../../../../../src/os/rtos/source/timers.c">
             <FileOption/>
           </File>
         </VirtualDirectory>
@@ -3586,6 +3613,9 @@
         <File Name="../../../../../../../platform/drivers/adc/wm_adc.c">
           <FileOption/>
         </File>
+        <File Name="../../../../../../../platform/drivers/adc/wm_polyfit.c">
+          <FileOption/>
+        </File>
       </VirtualDirectory>
       <VirtualDirectory Name="cpu">
         <File Name="../../../../../../../platform/drivers/cpu/wm_cpu.c">
@@ -3701,6 +3731,16 @@
           <FileOption/>
         </File>
       </VirtualDirectory>
+      <VirtualDirectory Name="touchsensor">
+        <File Name="../../../../../../../platform/drivers/touchsensor/wm_touchsensor.c">
+          <FileOption/>
+        </File>
+      </VirtualDirectory>
+      <VirtualDirectory Name="lcd">
+        <File Name="../../../../../../../platform/drivers/lcd/wm_lcd.c">
+          <FileOption/>
+        </File>
+      </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="sys">
       <File Name="../../../../../../../platform/sys/tls_sys.c">
@@ -3716,7 +3756,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="ld">
     <VirtualDirectory Name="w800">
-      <File Name="../../../../../../../ld/w800/gcc_csky.ld">
+      <File Name="../../../../../../../ld/w800/gcc_csky_bt.ld">
         <FileOption/>
       </File>
     </VirtualDirectory>
@@ -3746,12 +3786,6 @@
             <FileOption/>
           </File>
           <File Name="../../../../../../../include/arch/xt804/csi_dsp/csky_math.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../include/arch/xt804/csi_dsp/csky_vdsp2_const_structs.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../include/arch/xt804/csi_dsp/csky_vdsp2_math.h">
             <FileOption/>
           </File>
         </VirtualDirectory>
@@ -4117,6 +4151,15 @@
     <File Name="../../../../../../../demo/wm_slave_spi_demo.c">
       <FileOption/>
     </File>
+    <File Name="../../../../../../../demo/wm_avoid_copy_demo.c">
+      <FileOption/>
+    </File>
+    <File Name="../../../../../../../demo/wm_lcd_demo.c">
+      <FileOption/>
+    </File>
+    <File Name="../../../../../../../demo/wm_touchsensor_demo.c">
+      <FileOption/>
+    </File>
   </VirtualDirectory>
   <DebugSessions>
     <watchExpressions/>
@@ -4128,6 +4171,9 @@
     <debugLayout/>
     <memoryTabColSizeExpressions/>
   </DebugSessions>
+  <VendorInfo>
+    <VendorName>NULL</VendorName>
+  </VendorInfo>
   <BuildConfigs>
     <BuildConfig Name="BuildSet">
       <Target>
@@ -4227,7 +4273,7 @@
         <Undefine/>
         <Optim>Optimize more (-O2)</Optim>
         <DebugLevel>Maximum (-g3)</DebugLevel>
-        <IncludePath>$(CDKPath)/CSKY/MinGW/csky-abiv2-elf-toolchain/csky-elfabiv2/include;$(ProjectPath);$(ProjectPath)/../../../../../../../demo;$(ProjectPath)/../../../../../../../include;$(ProjectPath)/../../../../../../../include/app;$(ProjectPath)/../../../../../../../include/arch/xt804;$(ProjectPath)/../../../../../../../include/arch/xt804/csi_core;$(ProjectPath)/../../../../../../../include/arch/xt804/csi_dsp;$(ProjectPath)/../../../../../../../include/bt;$(ProjectPath)/../../../../../../../include/driver;$(ProjectPath)/../../../../../../../include/net;$(ProjectPath)/../../../../../../../include/os;$(ProjectPath)/../../../../../../../include/platform;$(ProjectPath)/../../../../../../../include/wifi;$(ProjectPath)/../../../../../../../platform/common/params;$(ProjectPath)/../../../../../../../platform/drivers/spi;$(ProjectPath)/../../../../../../../platform/inc;$(ProjectPath)/../../../../../../../platform/sys;$(ProjectPath)/../../../../../../../src/app;$(ProjectPath)/../../../../../../../src/app/bleapp;$(ProjectPath)/../../../../../../../src/app/btapp;$(ProjectPath)/../../../../../../../src/app/cJSON;$(ProjectPath)/../../../../../../../src/app/dhcpserver;$(ProjectPath)/../../../../../../../src/app/dnsserver;$(ProjectPath)/../../../../../../../src/app/fatfs;$(ProjectPath)/../../../../../../../src/app/httpclient;$(ProjectPath)/../../../../../../../src/app/iperf;$(ProjectPath)/../../../../../../../src/app/libcoap/include;$(ProjectPath)/../../../../../../../src/app/libwebsockets-2.1-stable;$(ProjectPath)/../../../../../../../src/app/mDNS/mDNSCore;$(ProjectPath)/../../../../../../../src/app/mDNS/mDNSPosix;$(ProjectPath)/../../../../../../../src/app/mbedtls/include;$(ProjectPath)/../../../../../../../src/app/mbedtls/include/mbedtls;$(ProjectPath)/../../../../../../../src/app/mbedtls/ports;$(ProjectPath)/../../../../../../../src/app/mqtt;$(ProjectPath)/../../../../../../../src/app/oneshotconfig;$(ProjectPath)/../../../../../../../src/app/ota;$(ProjectPath)/../../../../../../../src/app/ping;$(ProjectPath)/../../../../../../../src/app/polarssl/include;$(ProjectPath)/../../../../../../../src/app/web;$(ProjectPath)/../../../../../../../src/app/wm_atcmd;$(ProjectPath)/../../../../../../../src/bt/host/bta/include;$(ProjectPath)/../../../../../../../src/bt/host/btcore/include;$(ProjectPath)/../../../../../../../src/bt/host/btif/include;$(ProjectPath)/../../../../../../../src/bt/host/embdrv/sbc/decoder/include;$(ProjectPath)/../../../../../../../src/bt/host/embdrv/sbc/encoder/include;$(ProjectPath)/../../../../../../../src/bt/host/gki/common;$(ProjectPath)/../../../../../../../src/bt/host/gki/wm;$(ProjectPath)/../../../../../../../src/bt/host/hci/include;$(ProjectPath)/../../../../../../../src/bt/host/include;$(ProjectPath)/../../../../../../../src/bt/host/main;$(ProjectPath)/../../../../../../../src/bt/host/osi/include;$(ProjectPath)/../../../../../../../src/bt/host/osi/include/socket_utils;$(ProjectPath)/../../../../../../../src/bt/host/stack/bnep;$(ProjectPath)/../../../../../../../src/bt/host/stack/include;$(ProjectPath)/../../../../../../../src/bt/host/stack/smp;$(ProjectPath)/../../../../../../../src/bt/host/udrv/include;$(ProjectPath)/../../../../../../../src/bt/host/udrv/ulinux;$(ProjectPath)/../../../../../../../src/bt/host/vnd/ble;$(ProjectPath)/../../../../../../../src/bt/host/vnd/include;$(ProjectPath)/../../../../../../../src/network/api2.0.3;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/apps/httpd;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/apps/snmp;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/include;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/include/arch;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/include/lwip;$(ProjectPath)/../../../../../../../src/os/rtos/include;$(ProjectPath)/../../../../../../../src/bt/host/;$(ProjectPath)/../../../../../../../src/bt/host/stack/</IncludePath>
+        <IncludePath>$(CDKPath)/CSKY/MinGW/csky-abiv2-elf-toolchain/csky-elfabiv2/include;$(ProjectPath);$(ProjectPath)/../../../../../../../demo;$(ProjectPath)/../../../../../../../include;$(ProjectPath)/../../../../../../../include/app;$(ProjectPath)/../../../../../../../include/arch/xt804;$(ProjectPath)/../../../../../../../include/arch/xt804/csi_core;$(ProjectPath)/../../../../../../../include/arch/xt804/csi_dsp;$(ProjectPath)/../../../../../../../include/bt;$(ProjectPath)/../../../../../../../include/driver;$(ProjectPath)/../../../../../../../include/net;$(ProjectPath)/../../../../../../../include/os;$(ProjectPath)/../../../../../../../include/platform;$(ProjectPath)/../../../../../../../include/wifi;$(ProjectPath)/../../../../../../../platform/common/params;$(ProjectPath)/../../../../../../../platform/drivers/spi;$(ProjectPath)/../../../../../../../platform/inc;$(ProjectPath)/../../../../../../../platform/sys;$(ProjectPath)/../../../../../../../src/app;$(ProjectPath)/../../../../../../../src/app/btapp;$(ProjectPath)/../../../../../../../src/app/cJSON;$(ProjectPath)/../../../../../../../src/app/dhcpserver;$(ProjectPath)/../../../../../../../src/app/dnsserver;$(ProjectPath)/../../../../../../../src/app/fatfs;$(ProjectPath)/../../../../../../../src/app/httpclient;$(ProjectPath)/../../../../../../../src/app/iperf;$(ProjectPath)/../../../../../../../src/app/libcoap/include;$(ProjectPath)/../../../../../../../src/app/libwebsockets-2.1-stable;$(ProjectPath)/../../../../../../../src/app/mDNS/mDNSCore;$(ProjectPath)/../../../../../../../src/app/mDNS/mDNSPosix;$(ProjectPath)/../../../../../../../src/app/mbedtls/include;$(ProjectPath)/../../../../../../../src/app/mbedtls/include/mbedtls;$(ProjectPath)/../../../../../../../src/app/mbedtls/ports;$(ProjectPath)/../../../../../../../src/app/mqtt;$(ProjectPath)/../../../../../../../src/app/oneshotconfig;$(ProjectPath)/../../../../../../../src/app/ota;$(ProjectPath)/../../../../../../../src/app/ping;$(ProjectPath)/../../../../../../../src/app/polarssl/include;$(ProjectPath)/../../../../../../../src/app/web;$(ProjectPath)/../../../../../../../src/app/wm_atcmd;$(ProjectPath)/../../../../../../../src/bt/host/;$(ProjectPath)/../../../../../../../src/bt/host/bta/include;$(ProjectPath)/../../../../../../../src/bt/host/btcore/include;$(ProjectPath)/../../../../../../../src/bt/host/btif/include;$(ProjectPath)/../../../../../../../src/bt/host/embdrv/sbc/decoder/include;$(ProjectPath)/../../../../../../../src/bt/host/embdrv/sbc/encoder/include;$(ProjectPath)/../../../../../../../src/bt/host/gki/common;$(ProjectPath)/../../../../../../../src/bt/host/gki/wm;$(ProjectPath)/../../../../../../../src/bt/host/hci/include;$(ProjectPath)/../../../../../../../src/bt/host/include;$(ProjectPath)/../../../../../../../src/bt/host/main;$(ProjectPath)/../../../../../../../src/bt/host/osi/include;$(ProjectPath)/../../../../../../../src/bt/host/osi/include/socket_utils;$(ProjectPath)/../../../../../../../src/bt/host/stack/;$(ProjectPath)/../../../../../../../src/bt/host/stack/bnep;$(ProjectPath)/../../../../../../../src/bt/host/stack/include;$(ProjectPath)/../../../../../../../src/bt/host/stack/smp;$(ProjectPath)/../../../../../../../src/bt/host/udrv/include;$(ProjectPath)/../../../../../../../src/bt/host/udrv/ulinux;$(ProjectPath)/../../../../../../../src/bt/host/vnd/ble;$(ProjectPath)/../../../../../../../src/bt/host/vnd/include;$(ProjectPath)/../../../../../../../src/network/api2.0.3;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/apps/httpd;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/apps/snmp;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/include;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/include/arch;$(ProjectPath)/../../../../../../../src/network/lwip2.0.3/include/lwip;$(ProjectPath)/../../../../../../../src/os/rtos/include</IncludePath>
         <OtherFlags>-fdata-sections -c</OtherFlags>
         <Verbose>no</Verbose>
         <Ansi>no</Ansi>
@@ -4238,6 +4284,7 @@
         <AllWarn>yes</AllWarn>
         <WarnErr>no</WarnErr>
         <OneElfS>yes</OneElfS>
+        <OneElfSPerData>no</OneElfSPerData>
         <Fstrict>no</Fstrict>
       </Compiler>
       <Asm>
@@ -4249,8 +4296,9 @@
       </Asm>
       <Linker>
         <Garbage>yes</Garbage>
-        <LDFile>$(ProjectPath)..\..\..\..\..\..\..\ld\w800\gcc_csky.ld</LDFile>
-        <LibName>btcontroller;wlan;dsp</LibName>
+        <Garbage2>yes</Garbage2>
+        <LDFile>$(ProjectPath)..\..\..\..\..\..\..\ld\w800\gcc_csky_bt.ld</LDFile>
+        <LibName>libbtcontroller_br_edr;wlan;dsp</LibName>
         <LibPath>..\..\..\..\..\..\..\lib\w800</LibPath>
         <OtherFlags>-Wl,-zmax-page-size=1024 -mhard-float</OtherFlags>
         <AutoLDFile>no</AutoLDFile>
@@ -4262,10 +4310,12 @@
         <StopAt>yes</StopAt>
         <StopAtText>main</StopAtText>
         <InitFile>$(ProjectPath)..\..\..\..\..\..\..\tools\w800\utilities\gdb.init</InitFile>
+        <AfterLoadFile/>
         <AutoRun>yes</AutoRun>
         <ResetType>Hard Reset</ResetType>
         <SoftResetVal>0</SoftResetVal>
         <ResetAfterLoad>no</ResetAfterLoad>
+        <AfterResetFile/>
         <Dumpcore>no</Dumpcore>
         <DumpcoreText>$(ProjectPath)/$(ProjectName).cdkcore</DumpcoreText>
         <ConfigICE>
@@ -4295,6 +4345,15 @@
           <Log>no</Log>
           <SimTrace>no</SimTrace>
         </ConfigSIM>
+        <ConfigOpenOCD>
+          <OpenOCDExecutablePath/>
+          <OpenOCDTelnetPortEnable>no</OpenOCDTelnetPortEnable>
+          <OpenOCDTelnetPort>4444</OpenOCDTelnetPort>
+          <OpenOCDTclPortEnable>no</OpenOCDTclPortEnable>
+          <OpenOCDTclPort>6666</OpenOCDTclPort>
+          <OpenOCDConfigOptions/>
+          <OpenOCDTimeout>5000</OpenOCDTimeout>
+        </ConfigOpenOCD>
       </Debug>
       <Flash>
         <InitFile>$(ProjectPath)..\..\..\..\..\..\..\tools\w800\utilities\flashinit</InitFile>

@@ -35,6 +35,8 @@
 #include "wm_efuse.h"
 #include "wm_dhcp_server.h"
 #include "wm_wifi_oneshot.h"
+#include "wm_ram_config.h"
+#include "wm_pmu.h"
 
 extern const char FirmWareVer[];
 extern const char HwVer[];
@@ -177,6 +179,7 @@ int hostif_cipher2host(int cipher, int proto)
 
 static void ResetTimerProc(void *ptmr, void *parg)
 {
+	tls_sys_set_reboot_reason(REBOOT_REASON_ACTIVE);
     tls_sys_reset();
 }
 

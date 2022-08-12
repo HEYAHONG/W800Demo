@@ -16,7 +16,6 @@
 
 
 #if DEMO_SLAVE_SPI
-#if (TLS_CONFIG_HOSTIF && TLS_CONFIG_HS_SPI)
 
 #define USER_DEBUG		1
 #if USER_DEBUG
@@ -133,5 +132,4 @@ int slave_spi_demo(int type)
 }
 
 
-#endif
 #endif

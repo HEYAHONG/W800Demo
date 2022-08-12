@@ -1045,7 +1045,7 @@ dhcp_discover(struct netif *netif)
     autoip_start(netif);
   }
 #endif /* LWIP_DHCP_AUTOIP_COOP */
-  msecs = (dhcp->tries < 3 ? 1 << dhcp->tries : 3) * 500;
+  msecs = (dhcp->tries < 3 ? 1 << dhcp->tries : 4) * 500;
   dhcp->request_timeout = (msecs + DHCP_FINE_TIMER_MSECS - 1) / DHCP_FINE_TIMER_MSECS;
   LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_discover(): set request timeout %"U16_F" msecs\n", msecs));
   return result;
@@ -1899,8 +1899,9 @@ dhcp_create_msg(struct netif *netif, struct dhcp *dhcp, u8_t message_type)
     if (dhcp->tries == 0) {
 #if DHCP_CREATE_RAND_XID && defined(LWIP_RAND)
       {
-          extern int tls_wl_get_isr_count(void);  
-          srand(tls_wl_get_isr_count());    /*Using Wi-Fi Rx dataCnt as Random Seed*/
+      	  extern unsigned int tls_random_seed_generation(void );
+		  i = (u16_t)tls_random_seed_generation(); 
+		  srand(i);		  
           xid = LWIP_RAND();
       }
 #else /* DHCP_CREATE_RAND_XID && defined(LWIP_RAND) */

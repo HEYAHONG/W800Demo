@@ -32,6 +32,7 @@
 #define UART_PARITYODD_BIT		(0x10)
 #define UART_BITSTOP_VAL		(0x03)                  /// 1 stop-bit; no crc; 8 data-bits
 
+extern void set_printf_port(unsigned char port);
 static void uart0Init (int bandrate)
 {
 	unsigned int bd;
@@ -97,9 +98,11 @@ void board_init(void)
 #if USE_UART0_PRINT
     /* use uart0 as log output io */
     uart0Init(115200);
+	set_printf_port(0);
 #else
     uart1_io_init();
     /* use uart1 as log output io */
 	uart1Init(115200);
+	set_printf_port(1);	
 #endif
 }

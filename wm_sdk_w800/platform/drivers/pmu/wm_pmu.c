@@ -208,12 +208,9 @@ void tls_pmu_timer0_start(u16 second)
 	}
 	
 	val = tls_reg_read32(HR_PMU_PS_CR);
-	if (!(val & BIT(4)))
-	{
-		/*cal 32K osc*/
-		val |= BIT(3);
-		tls_reg_write32(HR_PMU_PS_CR, val);		
-	}
+	/*cal 32K osc*/
+	val |= BIT(3);
+	tls_reg_write32(HR_PMU_PS_CR, val);		
 
 	val = second;
 	val |= BIT(16);
@@ -261,10 +258,10 @@ void tls_pmu_timer1_start(u16 msec)
 	}
 	
 	val = tls_reg_read32(HR_PMU_PS_CR);
+	/*cal 32K osc*/
+	val |= BIT(3);	
 	if (!(val & BIT(4)))
 	{
-		/*cal 32K osc*/
-		val |= BIT(3);
 		tls_reg_write32(HR_PMU_PS_CR, val);		
 		if (msec < 5)
 		{
@@ -346,8 +343,11 @@ void tls_pmu_standby_start(void)
 void tls_pmu_sleep_start(void)
 {
 	u32 val;
+	u32 use40M;
 
 	tls_irq_enable(PMU_IRQn);		//默认打开中断为了清楚IO唤醒的中断标记
+
+
 	/*Clear Standby status after exit standby mode and enter sleep mode*/
 	val = tls_reg_read32(HR_PMU_INTERRUPT_SRC);
 	if (val&0x180)
@@ -356,6 +356,12 @@ void tls_pmu_sleep_start(void)
 	}
 	
 	val = tls_reg_read32(HR_PMU_PS_CR);
+	if (val&BIT(4))
+	{
+		use40M	= tls_reg_read32(HR_PMU_WLAN_STTS);
+		use40M |= BIT(8);
+		tls_reg_write32(HR_PMU_WLAN_STTS, use40M);
+	}
 	TLS_DBGPRT_INFO("goto sleep here\n");
 	val |= BIT(1);
 	tls_reg_write32(HR_PMU_PS_CR, val);

@@ -56,7 +56,7 @@ static void con_net_status_changed_event(u8 status )
     {
     case NETIF_WIFI_JOIN_SUCCESS:
     {
-        printf("%s:NETIF_WIFI_JOIN_SUCCESS\n",TAG);
+        wm_printf("%s:NETIF_WIFI_JOIN_SUCCESS\n",TAG);
         wifinet_status.status=0;
         wifinet_status.is_enable=1;
         wifinet_status.is_ap=0;
@@ -65,25 +65,25 @@ static void con_net_status_changed_event(u8 status )
     break;
     case NETIF_WIFI_JOIN_FAILED:
     {
-        printf("%s:NETIF_WIFI_JOIN_FAILED\n",TAG);
+        wm_printf("%s:NETIF_WIFI_JOIN_FAILED\n",TAG);
         wifinet_status.status=0;
     }
     break;
     case NETIF_WIFI_DISCONNECTED:
     {
-        printf("%s:NETIF_WIFI_DISCONNECTED\n",TAG);
+        wm_printf("%s:NETIF_WIFI_DISCONNECTED\n",TAG);
         wifinet_status.status=0;
     }
     break;
     case NETIF_IP_NET_UP:
     {
         wifinet_status.is_sta_ip_ok=1;
-        printf("%s:NETIF_IP_NET_UP\n",TAG);
+        wm_printf("%s:NETIF_IP_NET_UP\n",TAG);
         {
             struct netif *tmp=nf;
             while(tmp!=NULL)
             {
-                printf("%s:netif name:%c%c%u\r\n",TAG,tmp->name[0],tmp->name[1],tmp->num);
+                wm_printf("%s:netif name:%c%c%u\r\n",TAG,tmp->name[0],tmp->name[1],tmp->num);
                 print_ipaddr(&tmp->ip_addr);
                 print_ipaddr(&tmp->gw);
                 print_ipaddr(&tmp->netmask);
@@ -120,7 +120,7 @@ static void con_net_status_changed_event(u8 status )
             struct netif *tmp=nf;
             while(tmp!=NULL)
             {
-                printf("%s:netif name:%c%c%u\r\n",TAG,tmp->name[0],tmp->name[1],tmp->num);
+                wm_printf("%s:netif name:%c%c%u\r\n",TAG,tmp->name[0],tmp->name[1],tmp->num);
                 print_ipaddr(&tmp->ip_addr);
                 print_ipaddr(&tmp->gw);
                 print_ipaddr(&tmp->netmask);
@@ -131,7 +131,7 @@ static void con_net_status_changed_event(u8 status )
     break;
     default:
     {
-        printf("%s:UNKONWN STATE:%d\n",TAG,status);
+        wm_printf("%s:UNKONWN STATE:%d\n",TAG,status);
     }
     break;
     }
@@ -168,7 +168,7 @@ static int wifinetwork_sta_connect_net(char *ssid, char *pwd)
     }
 
     tls_wifi_connect((u8 *)ssid, strlen(ssid), (u8 *)pwd, strlen(pwd));
-    printf("%s:please wait connect net(%s)......\n",TAG,ssid);
+    wm_printf("%s:please wait connect net(%s)......\n",TAG,ssid);
 
     return WM_SUCCESS;
 }

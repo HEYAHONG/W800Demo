@@ -43,7 +43,7 @@ struct lsd_param_t{
 	u8 total_len;
 };
 
-extern struct lsd_param_t lsd_param;
+extern struct lsd_param_t *lsd_param;
 
 typedef int (*lsd_printf_fn) (const char* format, ...);
 
@@ -51,6 +51,7 @@ extern lsd_printf_fn lsd_printf;
 
 int tls_lsd_recv(u8 *buf, u16 data_len);
 void tls_lsd_init(u8 *scanBss);
+void tls_lsd_deinit(void);
 
 
 

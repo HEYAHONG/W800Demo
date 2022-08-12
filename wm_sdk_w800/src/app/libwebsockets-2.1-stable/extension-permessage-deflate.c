@@ -23,13 +23,9 @@
 #include "extension-permessage-deflate.h"
 #include <stdio.h>
 #include <string.h>
-#ifndef WM_W600
+
 #include <assert.h>
-#else
-#ifndef assert
-#define assert(n)
-#endif
-#endif
+
 
 #define LWS_ZLIB_MEMLEVEL 8
 

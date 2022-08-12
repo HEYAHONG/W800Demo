@@ -9,6 +9,8 @@
  *****************************************************************************/
 #include "wm_osal.h"
 #include "wm_lcd.h"
+#include "wm_io.h"
+#include "wm_pmu.h"
 
 #define RTC_CLK		(32000UL)	
 
@@ -88,64 +90,6 @@ void tls_lcd_init(tls_lcd_options_t *opts)
 	LCD->CTRL = opts->bias | opts->duty | opts->vlcd | (1 << 12);
 	tls_lcd_fresh_ratio(opts->com_number, opts->fresh_rate);	
 	TLS_LCD_ENABLE(opts->enable);
-	TLS_LCD_POWERDOWM(0);
-}
-
-/**
-  *******************************************************
-  *               TEST CODE IS BELOW
-  *******************************************************
-  */
-
-void lcd_test(void)
-{
-	int i,j;
-	tls_lcd_options_t lcd_opts = {
-	    true,
-	    BIAS_ONEFOURTH,
-	    DUTY_ONEEIGHTH,
-	    VLCD31,
-	    8,
-	    60,
-	};
-	
-    tls_lcd_init(&lcd_opts);
-	
-	while(1)
-	{
-#if 1
-		for(i=0; i<8; i++)
-		{
-			for(j=0; j<11; j++)
-			{
-				tls_lcd_seg_set(i, j, 1);
-				tls_os_time_delay(500);
-				//printf("%d %d %d\n", i, j, 1);
-			}
-		}
-		
-		for(i=0; i<8; i++)
-		{
-			for(j=0; j<11; j++)
-			{
-				tls_lcd_seg_set(i, j, 0);
-				tls_os_time_delay(500);
-				//printf("%d %d %d\n", i, j, 0);
-			}
-		}
-#else
-		
-		for(i=0; i<40; i++)
-		{
-			lcdDisplaySegment(i, 1);
-			tls_os_time_delay(HZ/2);
-		}
-		for(i=0; i<40; i++)
-		{
-			lcdDisplaySegment(i, 0);
-			tls_os_time_delay(HZ/2);
-		}
-#endif		
-	}
+	TLS_LCD_POWERDOWM(1);
 }
 

@@ -41,11 +41,24 @@ static u32 received_cnt = 0;
 static u32 send_cnt     = 0;
 static long long last_seq = -1;
 static char *pingusedbuf = NULL;
-
+#if (TLS_CONFIG_HOSTIF && TLS_CONFIG_UART)
+extern int tls_uart_get_at_cmd_port(void);
+#endif
 static void ping_print_str(const char *str)
 {
     if (g_ping_para.src)
+    {
+    	int cmd_port = TLS_UART_1;
+#if (TLS_CONFIG_HOSTIF && TLS_CONFIG_UART)
+		cmd_port = tls_uart_get_at_cmd_port();
+		if (cmd_port < TLS_UART_MAX)
+		{
+			tls_uart_write(cmd_port, (char *)str, strlen(str));
+		}
+#else
         tls_uart_write(TLS_UART_1, (char *)str, strlen(str));
+#endif
+    }
     else
         tls_uart_write(TLS_UART_0, (char *)str, strlen(str));
 }

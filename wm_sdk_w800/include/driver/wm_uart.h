@@ -100,7 +100,8 @@ enum
     TLS_UART_2 = 2,
     TLS_UART_3 = 3,
     TLS_UART_4 = 4,
-    TLS_UART_MAX = 5,
+    TLS_UART_5 = 5,    
+    TLS_UART_MAX = 6,
 };
 
 
@@ -352,7 +353,7 @@ typedef struct tls_uart_tx_msg
  * @brief	This function is used to initial uart port.
  *
  * @param[in] uart_no: is the uart number.
- *	- \ref TLS_UART_0 TLS_UART_1 TLS_UART_2 TLS_UART_3 TLS_UART_4
+ *	- \ref TLS_UART_0 TLS_UART_1 TLS_UART_2 TLS_UART_3 TLS_UART_4 TLS_UART_5
  * @param[in] opts: is the uart setting options,if this param is NULL,this function will use the default options.
  * @param[in] modeChoose:; choose uart2 mode or 7816 mode when uart_no is TLS_UART_2, 0 for uart2 mode and 1 for 7816 mode.
  *

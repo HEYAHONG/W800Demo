@@ -14,13 +14,7 @@
 
 #ifndef _COAP_RESOURCE_H_
 #define _COAP_RESOURCE_H_
-#ifdef WM_W600
-#ifndef assert
-#define assert(n)
-#endif
-#else
 # include <assert.h>
-#endif
 #ifndef COAP_RESOURCE_CHECK_TIME
 /** The interval in seconds to check if resources have changed. */
 #define COAP_RESOURCE_CHECK_TIME 2

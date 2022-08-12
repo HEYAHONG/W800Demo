@@ -375,6 +375,7 @@ static int hspi_net_send(struct tls_hspi *hspi,
     u8 dest_type;
     u32 buflen;
     char *buf;
+	int ret = 0;
 
 // TLS_DBGPRT_INFO("----------->\n");
 
@@ -408,8 +409,20 @@ static int hspi_net_send(struct tls_hspi *hspi,
         buf = (char *) ((char *) rx_desc->buf_addr +
                         sizeof(struct tls_hostif_hdr));
     }
+	do
+	{
+		ret = tls_hostif_send_data(&skt_info, buf, buflen);
+		if (0 == ret)
+		{
+			break;
+		}
+		tls_os_time_delay(10);
+	}while(ret == -1);
 
-    tls_hostif_send_data(&skt_info, buf, buflen);
+	if (ret != 0)
+	{
+		printf("send failed in spi net send function\r\n");
+	}
 
     return 0;
 }

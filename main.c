@@ -8,7 +8,6 @@
 uint8_t macaddr[MACADDR_LENGTH]={0};
 
 extern size_t  tls_mem_get_avail_heapsize();
-
 static const char * TAG="main";
 static  OS_STK  main_task_stack[2048];
 static void main_task(void *arg)
@@ -26,8 +25,8 @@ static void main_task(void *arg)
 
     app_init();
 
-    printf("%s:free memory %d bytes\r\n",TAG,tls_mem_get_avail_heapsize());
-    printf("%s:main task running\r\ntick=%lu\r\n",TAG,xTaskGetTickCount());
+    wm_printf("%s:free memory %d bytes\r\n",TAG,tls_mem_get_avail_heapsize());
+    wm_printf("%s:main task running\r\ntick=%lu\r\n",TAG,xTaskGetTickCount());
 
 
     while(true)
@@ -42,7 +41,7 @@ static void main_task(void *arg)
 
 void UserMain(void)
 {
-    printf("\nMain Started\n");
+    wm_printf("\nMain Started\n");
     tls_os_task_create(NULL,"main",main_task,NULL,(void *)main_task_stack,sizeof(main_task_stack),32,0);
 }
 

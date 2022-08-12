@@ -7,13 +7,7 @@
  */
 
 #ifdef WITH_POSIX
-#ifndef WM_W600
 #include <assert.h>
-#else
-#ifndef assert
-#define assert(n)
-#endif
-#endif
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>

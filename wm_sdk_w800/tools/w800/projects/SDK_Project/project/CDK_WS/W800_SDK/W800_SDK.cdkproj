@@ -6,82 +6,45 @@
     <VirtualDirectory Name="os">
       <VirtualDirectory Name="rtos">
         <VirtualDirectory Name="include">
-          <File Name="../../../../../../../src/os/rtos/include/croutine.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/FreeRTOS.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/FreeRTOSConfig.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/mpu_wrappers.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/portable.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/portmacro.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/projdefs.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/rtoslist.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/rtosqueue.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/rtostimers.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/semphr.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/StackMacros.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/include/task.h">
-            <FileOption/>
-          </File>
+          <File Name="../../../../../../../src/os/rtos/include/atomic.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/croutine.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/deprecated_definitions.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/event_groups.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/FreeRTOS.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/FreeRTOSConfig.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/message_buffer.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/mpu_prototypes.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/mpu_wrappers.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/portable.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/portmacro.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/projdefs.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/rtoslist.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/rtosqueue.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/rtostimers.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/semphr.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/StackMacros.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/stack_macros.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/stream_buffer.h"/>
+          <File Name="../../../../../../../src/os/rtos/include/task.h"/>
         </VirtualDirectory>
         <VirtualDirectory Name="ports">
           <VirtualDirectory Name="xt804">
-            <File Name="../../../../../../../src/os/rtos/ports/xt804/cpu_task_sw.S">
-              <FileOption/>
-            </File>
-            <File Name="../../../../../../../src/os/rtos/ports/xt804/port.c">
-              <FileOption/>
-            </File>
+            <File Name="../../../../../../../src/os/rtos/ports/xt804/cpu_task_sw.S"/>
+            <File Name="../../../../../../../src/os/rtos/ports/xt804/port.c"/>
           </VirtualDirectory>
         </VirtualDirectory>
         <VirtualDirectory Name="source">
-          <File Name="../../../../../../../src/os/rtos/source/croutine.c">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/source/heap_2.c">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/source/heap_3.c">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/source/list.c">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/source/queue.c">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/source/rtostimers.c">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../src/os/rtos/source/tasks.c">
-            <FileOption/>
-          </File>
+          <File Name="../../../../../../../src/os/rtos/source/croutine.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/event_groups.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/heap_2.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/heap_3.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/list.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/queue.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/stream_buffer.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/tasks.c"/>
+          <File Name="../../../../../../../src/os/rtos/source/timers.c"/>
         </VirtualDirectory>
-        <File Name="../../../../../../../src/os/rtos/wm_osal_rtos.c">
-          <FileOption/>
-        </File>
+        <File Name="../../../../../../../src/os/rtos/wm_osal_rtos.c"/>
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="app">
@@ -1107,16 +1070,42 @@
         <File Name="../../../../../../../src/app/bleapp/wm_bt_app.h">
           <FileOption/>
         </File>
-        <File Name="../../../../../../../src/app/bleapp/wm_bt_storage.c">
-          <FileOption/>
-        </File>
-        <File Name="../../../../../../../src/app/bleapp/wm_bt_storage.h">
-          <FileOption/>
-        </File>
         <File Name="../../../../../../../src/app/bleapp/wm_bt_util.c">
           <FileOption/>
         </File>
         <File Name="../../../../../../../src/app/bleapp/wm_bt_util.h">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_gen_level_server.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_gen_onoff_client.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_gen_onoff_server.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_health_server.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_light_model.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_node_demo.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/bleapp/wm_ble_mesh_vnd_model.c">
+          <FileOption/>
+        </File>
+      </VirtualDirectory>
+      <VirtualDirectory Name="factorycmd">
+        <File Name="../../../../../../../src/app/factorycmd/factory_atcmd.c">
+          <FileOption/>
+        </File>
+        <File Name="../../../../../../../src/app/factorycmd/factory_atcmd.h">
           <FileOption/>
         </File>
       </VirtualDirectory>
@@ -2071,6 +2060,9 @@
                 <File Name="../../../../../../../src/bt/blehost/nimble/host/mesh/src/transport.h">
                   <FileOption/>
                 </File>
+                <File Name="../../../../../../../src/bt/blehost/nimble/host/mesh/src/wm_ble_mesh_store.c">
+                  <FileOption/>
+                </File>
               </VirtualDirectory>
             </VirtualDirectory>
             <VirtualDirectory Name="services">
@@ -2319,7 +2311,12 @@
                   <File Name="../../../../../../../src/bt/blehost/nimble/host/store/config/src/ble_store_config_priv.h">
                     <FileOption/>
                   </File>
-                  <File Name="../../../../../../../src/bt/blehost/nimble/host/store/config/src/ble_store_nvram.c"/>
+                  <File Name="../../../../../../../src/bt/blehost/nimble/host/store/config/src/ble_store_nvram.c">
+                    <FileOption/>
+                  </File>
+                  <File Name="../../../../../../../src/bt/blehost/nimble/host/store/config/src/wm_bt_storage.c">
+                    <FileOption/>
+                  </File>
                 </VirtualDirectory>
               </VirtualDirectory>
               <VirtualDirectory Name="ram">
@@ -2513,9 +2510,6 @@
               <File Name="../../../../../../../src/bt/blehost/porting/w800/src/nimble_port.c">
                 <FileOption/>
               </File>
-              <File Name="../../../../../../../src/bt/blehost/porting/w800/src/nimble_port_freertos.c">
-                <FileOption/>
-              </File>
               <File Name="../../../../../../../src/bt/blehost/porting/w800/src/npl_os_freertos.c">
                 <FileOption/>
               </File>
@@ -2641,6 +2635,9 @@
         <File Name="../../../../../../../platform/drivers/adc/wm_adc.c">
           <FileOption/>
         </File>
+        <File Name="../../../../../../../platform/drivers/adc/wm_polyfit.c">
+          <FileOption/>
+        </File>
       </VirtualDirectory>
       <VirtualDirectory Name="cpu">
         <File Name="../../../../../../../platform/drivers/cpu/wm_cpu.c">
@@ -2761,6 +2758,11 @@
           <FileOption/>
         </File>
       </VirtualDirectory>
+      <VirtualDirectory Name="lcd">
+        <File Name="../../../../../../../platform/drivers/lcd/wm_lcd.c">
+          <FileOption/>
+        </File>
+      </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="sys">
       <File Name="../../../../../../../platform/sys/tls_sys.c">
@@ -2806,12 +2808,6 @@
             <FileOption/>
           </File>
           <File Name="../../../../../../../include/arch/xt804/csi_dsp/csky_math.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../include/arch/xt804/csi_dsp/csky_vdsp2_const_structs.h">
-            <FileOption/>
-          </File>
-          <File Name="../../../../../../../include/arch/xt804/csi_dsp/csky_vdsp2_math.h">
             <FileOption/>
           </File>
         </VirtualDirectory>
@@ -3174,7 +3170,15 @@
     <File Name="../../../../../../../demo/wm_slave_spi_demo.c">
       <FileOption/>
     </File>
-    <File Name="../../../../../../../demo/wm_touchsensor_demo.c"/>
+    <File Name="../../../../../../../demo/wm_touchsensor_demo.c">
+      <FileOption/>
+    </File>
+    <File Name="../../../../../../../demo/wm_avoid_copy_demo.c">
+      <FileOption/>
+    </File>
+    <File Name="../../../../../../../demo/wm_lcd_demo.c">
+      <FileOption/>
+    </File>
   </VirtualDirectory>
   <DebugSessions>
     <watchExpressions/>
@@ -3187,6 +3191,9 @@
     <memoryTabColSizeExpressions/>
   </DebugSessions>
   <Dependencies Name="BuildSet"/>
+  <VendorInfo>
+    <VendorName>NULL</VendorName>
+  </VendorInfo>
   <BuildConfigs>
     <BuildConfig Name="BuildSet">
       <Target>
@@ -3297,6 +3304,7 @@
         <AllWarn>yes</AllWarn>
         <WarnErr>no</WarnErr>
         <OneElfS>yes</OneElfS>
+        <OneElfSPerData>no</OneElfSPerData>
         <Fstrict>no</Fstrict>
       </Compiler>
       <Asm>
@@ -3308,6 +3316,7 @@
       </Asm>
       <Linker>
         <Garbage>yes</Garbage>
+        <Garbage2>yes</Garbage2>
         <LDFile>$(ProjectPath)..\..\..\..\..\..\..\ld\w800\gcc_csky.ld</LDFile>
         <LibName>btcontroller;wlan;dsp</LibName>
         <LibPath>..\..\..\..\..\..\..\lib\w800</LibPath>
@@ -3321,10 +3330,12 @@
         <StopAt>yes</StopAt>
         <StopAtText>main</StopAtText>
         <InitFile>$(ProjectPath)..\..\..\..\..\..\..\tools\w800\utilities\gdb.init</InitFile>
+        <AfterLoadFile/>
         <AutoRun>yes</AutoRun>
         <ResetType>Hard Reset</ResetType>
         <SoftResetVal>0</SoftResetVal>
         <ResetAfterLoad>no</ResetAfterLoad>
+        <AfterResetFile/>
         <Dumpcore>no</Dumpcore>
         <DumpcoreText>$(ProjectPath)/$(ProjectName).cdkcore</DumpcoreText>
         <ConfigICE>
@@ -3354,6 +3365,15 @@
           <Log>no</Log>
           <SimTrace>no</SimTrace>
         </ConfigSIM>
+        <ConfigOpenOCD>
+          <OpenOCDExecutablePath/>
+          <OpenOCDTelnetPortEnable>no</OpenOCDTelnetPortEnable>
+          <OpenOCDTelnetPort>4444</OpenOCDTelnetPort>
+          <OpenOCDTclPortEnable>no</OpenOCDTclPortEnable>
+          <OpenOCDTclPort>6666</OpenOCDTclPort>
+          <OpenOCDConfigOptions/>
+          <OpenOCDTimeout>5000</OpenOCDTimeout>
+        </ConfigOpenOCD>
       </Debug>
       <Flash>
         <InitFile>$(ProjectPath)..\..\..\..\..\..\..\tools\w800\utilities\flashinit</InitFile>

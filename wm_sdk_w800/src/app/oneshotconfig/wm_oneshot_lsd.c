@@ -55,7 +55,7 @@ u8 lsd_temp_lock = 0;
 
 
 struct lsd_data_t *lsd_data = NULL;
-struct lsd_param_t lsd_param;
+struct lsd_param_t *lsd_param = NULL;
 
 
 u8 lsd_crc_value = 0;
@@ -192,7 +192,7 @@ int tls_lsd_recv(u8 *buf, u16 data_len)
 	u16 guide_len;
 	u8 tods = 0;
 	u32 crcValue;
-	if (NULL == lsd_data)
+	if (NULL == lsd_data || NULL == lsd_param)
 	{
 		return -1;
 	}
@@ -459,61 +459,61 @@ int tls_lsd_recv(u8 *buf, u16 data_len)
 				
 					if((ssidLen==0) && (pwdLen==0))				//only userData
 					{
-						lsd_param.ssid_len = 0;
-						lsd_param.pwd_len = 0;
-						lsd_param.user_len = totalLen - 2;
-						if(lsd_param.user_len > 128)
+						lsd_param->ssid_len = 0;
+						lsd_param->pwd_len = 0;
+						lsd_param->user_len = totalLen - 2;
+						if(lsd_param->user_len > 128)
 						{
 							lsd_data_cnt = 0;
 							memset((u8 *)lsd_data, 0, sizeof(struct lsd_data_t));
 							return LSD_ONESHOT_ERR;
 						}
-						memcpy(lsd_param.user_data, &lsd_data->data[3], lsd_param.user_len);	
+						memcpy(lsd_param->user_data, &lsd_data->data[3], lsd_param->user_len);	
 						if(lsd_printf)
-							lsd_printf("user data:%s\n", lsd_param.user_data);
+							lsd_printf("user data:%s\n", lsd_param->user_data);
 						return LSD_ONESHOT_COMPLETE;
 					}
 											
 					bssidCrc = lsd_data->data[3];
 					if(pwdLen > 0)
 					{
-						memcpy(lsd_param.pwd, &lsd_data->data[4], pwdLen);
-						memcpy(lsd_param.ssid, &lsd_data->data[5+pwdLen], ssidLen);
+						memcpy(lsd_param->pwd, &lsd_data->data[4], pwdLen);
+						memcpy(lsd_param->ssid, &lsd_data->data[5+pwdLen], ssidLen);
 						ssidCrc = lsd_data->data[5+ssidLen+pwdLen];	
-						lsd_param.user_len = totalLen - pwdLen - ssidLen - 5;	
-						if(lsd_param.user_len > 128)
+						lsd_param->user_len = totalLen - pwdLen - ssidLen - 5;	
+						if(lsd_param->user_len > 128)
 						{
 							lsd_data_cnt = 0;
 							memset((u8 *)lsd_data, 0, sizeof(struct lsd_data_t));
 							return LSD_ONESHOT_ERR;
 						}
-						memcpy(lsd_param.user_data, &lsd_data->data[6+ssidLen+pwdLen], lsd_param.user_len);
+						memcpy(lsd_param->user_data, &lsd_data->data[6+ssidLen+pwdLen], lsd_param->user_len);
 					}
 					else
 					{
-						memcpy(lsd_param.ssid, &lsd_data->data[4+pwdLen], ssidLen);
+						memcpy(lsd_param->ssid, &lsd_data->data[4+pwdLen], ssidLen);
 						ssidCrc = lsd_data->data[4+ssidLen+pwdLen];
-						lsd_param.user_len = totalLen - ssidLen - 4;	
-						if(lsd_param.user_len > 128)
+						lsd_param->user_len = totalLen - ssidLen - 4;	
+						if(lsd_param->user_len > 128)
 						{
 							lsd_data_cnt = 0;
 							memset((u8 *)lsd_data, 0, sizeof(struct lsd_data_t));
 							return LSD_ONESHOT_ERR;
 						}
-						memcpy(lsd_param.user_data, &lsd_data->data[5+ssidLen], lsd_param.user_len);
+						memcpy(lsd_param->user_data, &lsd_data->data[5+ssidLen], lsd_param->user_len);
 					}	
-					lsd_param.ssid_len = ssidLen;
-					lsd_param.pwd_len = pwdLen;
-					lsd_param.total_len = totalLen;
+					lsd_param->ssid_len = ssidLen;
+					lsd_param->pwd_len = pwdLen;
+					lsd_param->total_len = totalLen;
 					if(lsd_printf)
-						lsd_printf("user data:%s\n", lsd_param.user_data);
+						lsd_printf("user data:%s\n", lsd_param->user_data);
 					if(lsd_printf)
 						lsd_printf("ssidLen:%d, ssidCrc:%02X, bssidCrc:%02X\n", ssidLen, ssidCrc, bssidCrc);
-					lsd_ssid_bssid_crc_match(ssidCrc, bssidCrc, &ssidLen, lsd_param.ssid, lsd_param.bssid);
-					lsd_param.ssid_len = ssidLen;
+					lsd_ssid_bssid_crc_match(ssidCrc, bssidCrc, &ssidLen, lsd_param->ssid, lsd_param->bssid);
+					lsd_param->ssid_len = ssidLen;
 					if(lsd_printf)
-						lsd_printf("bssid:%02X%02X%02X%02X%02X%02X\n", lsd_param.bssid[0], lsd_param.bssid[1], lsd_param.bssid[2]
-						, lsd_param.bssid[3], lsd_param.bssid[4], lsd_param.bssid[5]);	
+						lsd_printf("bssid:%02X%02X%02X%02X%02X%02X\n", lsd_param->bssid[0], lsd_param->bssid[1], lsd_param->bssid[2]
+						, lsd_param->bssid[3], lsd_param->bssid[4], lsd_param->bssid[5]);	
 					return LSD_ONESHOT_COMPLETE;
 				}	//have no userData
 				else if(ssidLen > 0)
@@ -554,7 +554,7 @@ int tls_lsd_recv(u8 *buf, u16 data_len)
 							{
 								if(lsd_data->used[4+i])
 								{
-									lsd_param.pwd[i] = lsd_data->data[4+i];
+									lsd_param->pwd[i] = lsd_data->data[4+i];
 								}
 								else
 								{
@@ -565,24 +565,24 @@ int tls_lsd_recv(u8 *buf, u16 data_len)
 							{
 								return LSD_ONESHOT_CONTINUE;
 							}
-							if(pwdCrc != lsd_crc8_calc(lsd_data->data[4], pwdLen))
+							if(pwdCrc != lsd_crc8_calc(&lsd_data->data[4], pwdLen))
 							{
 								if(lsd_printf)
 									lsd_printf("pwdCrc err\n");
 								lsd_data_cnt = 0;
 								memset((u8 *)lsd_data, 0, sizeof(struct lsd_data_t));
-								memset(lsd_param.pwd, 0, 65);
+								memset(lsd_param->pwd, 0, 65);
 								return LSD_ONESHOT_CONTINUE;								
 							}
 						}
-						ret = lsd_ssid_bssid_crc_match(ssidCrc, bssidCrc, &ssidLen, lsd_param.ssid,  lsd_param.bssid);
+						ret = lsd_ssid_bssid_crc_match(ssidCrc, bssidCrc, &ssidLen, lsd_param->ssid,  lsd_param->bssid);
 						if(ret == 0)
 						{
 							if(lsd_printf)
 								lsd_printf("lsd_ssid_bssid_crc_match sucess\n");
-							lsd_param.ssid_len = ssidLen;
-							lsd_param.pwd_len = pwdLen;
-							lsd_param.total_len = totalLen;
+							lsd_param->ssid_len = ssidLen;
+							lsd_param->pwd_len = pwdLen;
+							lsd_param->total_len = totalLen;
 							return LSD_ONESHOT_COMPLETE;
 						}
 					}
@@ -612,10 +612,29 @@ void tls_lsd_init(u8 *scanBss)
 	{
 		memset((u8 *)lsd_data, 0, sizeof(struct lsd_data_t));
 	}
+
+	if (NULL == lsd_param)
+	{
+		lsd_param = (struct lsd_param_t *)tls_mem_alloc(sizeof(struct lsd_param_t));
+		if (lsd_param)
+		{
+			memset((u8 *)lsd_param, 0, sizeof(struct lsd_param_t));
+		}
+		else
+		{
+			if(lsd_printf)
+				lsd_printf("lsd param malloc failed\n");
+		}
+	}
+	else
+	{
+		memset((u8 *)lsd_param, 0, sizeof(struct lsd_param_t));
+	}
+
+	
 	memset(lsd_head, 0, sizeof(lsd_head));
 	memset(lsd_byte, 0, sizeof(lsd_byte));
 	memset(lsd_src_mac, 0, 6);
-	memset(&lsd_param, 0, sizeof(struct lsd_param_t));
 
 	memset(lsd_last_num, 0, sizeof(lsd_last_num));
 	lsd_temp_lock = 0;
@@ -639,6 +658,12 @@ void tls_lsd_deinit(void)
 	{
 		tls_mem_free(lsd_data);
 		lsd_data = NULL;
+	}
+
+	if (lsd_param)
+	{
+		tls_mem_free(lsd_param);
+		lsd_param = NULL;
 	}
 }
 

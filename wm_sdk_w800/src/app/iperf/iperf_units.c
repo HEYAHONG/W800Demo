@@ -52,13 +52,7 @@
  * ------------------------------------------------------------------- */
 
 #include <stdio.h>
-#ifndef WM_W600
 #include <assert.h>
-#else
-#ifndef assert
-#define assert(n)
-#endif
-#endif
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>

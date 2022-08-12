@@ -25,7 +25,7 @@ int ThreadStart(Thread* thread, void (*fn)(void*), void* arg)
     UBaseType_t uxTaskPriority = uxTaskPriorityGet(NULL); /* set the priority as the same as the calling task*/
 
     rc = xTaskCreate(fn,	/* The function that implements the task. */
-                     (signed char *)"MQTTTask",			/* Just a text name for the task to aid debugging. */
+                     "MQTTTask",			/* Just a text name for the task to aid debugging. */
                      usTaskStackSize,	/* The stack size is defined in FreeRTOSIPConfig.h. */
                      arg,				/* The task parameter, not used in this case. */
                      uxTaskPriority,		/* The priority assigned to the task is defined in FreeRTOSConfig.h. */

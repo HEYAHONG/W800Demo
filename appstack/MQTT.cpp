@@ -10,6 +10,7 @@ extern "C"
 extern void * cpp_malloc(size_t nsize);
 extern void cpp_free(void *p);
 extern char macaddrstr[];
+#include "wm_include.h"
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -72,28 +73,28 @@ bool SMGS_IsOnline(struct __SMGS_device_context_t *ctx)
 bool SMGS_Device_Command(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_cmdid_t *cmdid,uint8_t *cmddata,size_t cmddata_length,uint8_t *retbuff,size_t *retbuff_length,SMGS_payload_retcode_t *ret)
 {
     bool _ret=false;
-    printf("%s:Device_Command(CmdID=%04X)\r\n",TAG,(uint32_t)(*cmdid));
+    wm_printf("%s:Device_Command(CmdID=%04X)\r\n",TAG,(uint32_t)(*cmdid));
     return _ret;
 }
 
 bool SMGS_Device_ReadRegister(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
 {
     bool ret=false;
-    printf("%s:Device_ReadRegister(Addr=%04X)\r\n",TAG,(uint32_t)addr);
+    wm_printf("%s:Device_ReadRegister(Addr=%04X)\r\n",TAG,(uint32_t)addr);
     return ret;
 }
 
 bool SMGS_Device_WriteRegister(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
 {
     bool ret=false;
-    printf("%s:Device_WriteRegister(Addr=%04X,Data=%016llX,Flag=%02X)\r\n",TAG,(uint32_t)addr,(*dat),(uint32_t)(flag->val));
+    wm_printf("%s:Device_WriteRegister(Addr=%04X,Data=%016llX,Flag=%02X)\r\n",TAG,(uint32_t)addr,(*dat),(uint32_t)(flag->val));
     return ret;
 }
 
 bool SMGS_Device_ReadSensor(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_sensor_address_t addr,uint64_t *dat,SMGS_payload_sensor_flag_t *flag)
 {
     bool ret=false;
-    printf("%s:Device_ReadSensor(Addr=%04X,Flag=%02X)\r\n",TAG,(uint32_t)addr,(uint32_t)(flag->val));
+    wm_printf("%s:Device_ReadSensor(Addr=%04X,Flag=%02X)\r\n",TAG,(uint32_t)addr,(uint32_t)(flag->val));
     return ret;
 }
 
@@ -103,28 +104,28 @@ SMGS_gateway_context_t gateway_context;
 bool SMGS_GateWay_Command(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_cmdid_t *cmdid,uint8_t *cmddata,size_t cmddata_length,uint8_t *retbuff,size_t *retbuff_length,SMGS_payload_retcode_t *ret)
 {
     bool _ret=false;
-    printf("%s:GateWay_Command(CmdID=%04X)\r\n",TAG,(uint32_t)(*cmdid));
+    wm_printf("%s:GateWay_Command(CmdID=%04X)\r\n",TAG,(uint32_t)(*cmdid));
     return _ret;
 }
 
 bool SMGS_GateWay_ReadRegister(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
 {
     bool ret=false;
-    printf("%s:GateWay_ReadRegister(Addr=%04X)\r\n",TAG,(uint32_t)addr);
+    wm_printf("%s:GateWay_ReadRegister(Addr=%04X)\r\n",TAG,(uint32_t)addr);
     return ret;
 }
 
 bool SMGS_GateWay_WriteRegister(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
 {
     bool ret=false;
-    printf("%s:GateWay_WriteRegister(Addr=%04X,Data=%016llX,Flag=%02X)\r\n",TAG,(uint32_t)addr,(*dat),(uint32_t)(flag->val));
+    wm_printf("%s:GateWay_WriteRegister(Addr=%04X,Data=%016llX,Flag=%02X)\r\n",TAG,(uint32_t)addr,(*dat),(uint32_t)(flag->val));
     return ret;
 }
 
 bool SMGS_GateWay_ReadSensor(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_sensor_address_t addr,uint64_t *dat,SMGS_payload_sensor_flag_t *flag)
 {
     bool ret=false;
-    printf("%s:GateWay_ReadSensor(Addr=%04X,Flag=%02X)\r\n",TAG,(uint32_t)addr,(uint32_t)(flag->val));
+    wm_printf("%s:GateWay_ReadSensor(Addr=%04X,Flag=%02X)\r\n",TAG,(uint32_t)addr,(uint32_t)(flag->val));
     return ret;
 }
 
@@ -179,7 +180,7 @@ static bool SMGS_MessagePublish(struct __SMGS_gateway_context_t *ctx,const char 
 static char subscribestr[64]= {0};
 static void mqtt_receive_task(void *arg)
 {
-    printf("%s:mqtt task start!!\r\n",TAG);
+    wm_printf("%s:mqtt task start!!\r\n",TAG);
 
     strcat(GateWaySerialNumber,macaddrstr);
 
@@ -218,13 +219,13 @@ static void mqtt_receive_task(void *arg)
     while(true)
     {
         //测试MQTT连接
-        printf("%s:mqtt start!!\r\n",TAG);
+        wm_printf("%s:mqtt start!!\r\n",TAG);
 
 
         NetworkInit(&mqttserver);
-        while(0!=NetworkConnect(&mqttserver,(char *)"didiyun.hyhsystem.cn",1883))
+        while(0!=NetworkConnect(&mqttserver,(char *)"mqtt.hyhsystem.cn",1883))
         {
-            printf("%s:connect mqtt server!\r\n",TAG);
+            wm_printf("%s:connect mqtt server!\r\n",TAG);
             vTaskDelay(3000);
         }
 
@@ -262,8 +263,8 @@ static void mqtt_receive_task(void *arg)
 
             if(SUCCESS!=MQTTConnect(&mqttclient,&cfg))
             {
-                printf("%s:mqtt connect failed!!\r\n",TAG);
-		mqttserver.disconnect(&mqttserver);
+                wm_printf("%s:mqtt connect failed!!\r\n",TAG);
+                mqttserver.disconnect(&mqttserver);
                 continue;
             }
         }
@@ -273,8 +274,8 @@ static void mqtt_receive_task(void *arg)
             strcat(subscribestr,"/#");
             if(SUCCESS!=MQTTSubscribe(&mqttclient,subscribestr,QOS0,mqttmessageHandler))
             {
-                printf("%s:mqtt subscribe failed!!\r\n",TAG);
-		mqttserver.disconnect(&mqttserver);
+                wm_printf("%s:mqtt subscribe failed!!\r\n",TAG);
+                mqttserver.disconnect(&mqttserver);
                 continue;
             }
         }
@@ -285,7 +286,7 @@ static void mqtt_receive_task(void *arg)
             SMGS_GateWay_Online(&gateway_context,buff,sizeof(buff),0,0);
         }
 
-        printf("%s:SimpleMQTTGateWayStack Online\r\n",TAG);
+        wm_printf("%s:SimpleMQTTGateWayStack Online\r\n",TAG);
 
         {
             while(SUCCESS==MQTTYield(&mqttclient,10))
@@ -295,7 +296,7 @@ static void mqtt_receive_task(void *arg)
         }
 
 
-        printf("%s:mqtt yield failed!!restarting!!!\r\n",TAG);
+        wm_printf("%s:mqtt yield failed!!restarting!!!\r\n",TAG);
 
         if(mqttserver.disconnect!=NULL)
         {
@@ -316,7 +317,7 @@ static void mqtt_ping_task(void *arg)
         {
             last_ping_tick=xTaskGetTickCount();
             bool is_ok=mqtt_ping(&mqttclient);
-            printf("%s:ping %s\r\n",TAG,is_ok?"success":"failed");
+            wm_printf("%s:ping %s\r\n",TAG,is_ok?"success":"failed");
         }
         vTaskDelay(1000);
     }

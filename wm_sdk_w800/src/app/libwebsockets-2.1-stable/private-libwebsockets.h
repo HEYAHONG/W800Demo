@@ -40,12 +40,8 @@
 //#include <ctype.h>
 //#include <limits.h>
 #include <stdarg.h>
-#if defined(WM_W600)
-#define assert(n)
-#else
 #define STORE_IN_ROM
 #include <assert.h>
-#endif
 #if LWS_MAX_SMP > 1
 #include <pthread.h>
 #endif

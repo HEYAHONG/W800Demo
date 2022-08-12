@@ -24,28 +24,7 @@
 #include "lwip/netdb.h"
 #include "string.h"
 
-#ifndef TickType_t
-#define TickType_t portTickType
-#endif // TickType_t
-#ifndef TimeOut_t
-#define TimeOut_t  xTimeOutType
-#endif // TimeOut_t
-#ifndef SemaphoreHandle_t
-#define SemaphoreHandle_t xSemaphoreHandle
-#endif // SemaphoreHandle_t
-#ifndef TaskHandle_t
-#define TaskHandle_t xTaskHandle
-#endif // TaskHandle_t
-#ifndef pdMS_TO_TICKS
-#include "FreeRTOS.h"
-#define pdMS_TO_TICKS(x) ((x)/((1000/configTICK_RATE_HZ)))
-#endif // pdMS_TO_TICKS
-#ifndef UBaseType_t
-#define UBaseType_t portBASE_TYPE
-#endif // UBaseType_t
-#ifndef portTICK_PERIOD_MS
-#define portTICK_PERIOD_MS (1000/configTICK_RATE_HZ)
-#endif // portTICK_PERIOD_MS
+
 
 
 /*

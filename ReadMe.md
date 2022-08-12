@@ -78,5 +78,5 @@ mingw32-make flash
 
 # 其他说明
 
-wm_sdk_w800目录为官方公开的SDK，版本为[wm_sdk_w800_20210730](https://www.winnermicro.com/upload/1/editor/1628068843962.rar)
+wm_sdk_w800目录为官方公开的SDK，版本为[W800 SDK v1.00.08](https://www.winnermicro.com/upload/1/editor/1659085340226.rar)
 

@@ -11,14 +11,9 @@
 #if defined(HAVE_STRNLEN) && defined(__GNUC__) && !defined(_GNU_SOURCE)
 #define _GNU_SOURCE 1
 #endif
-#ifdef WM_W600
-#ifndef assert
-#define assert(n)
-#endif
-#else
+
 #if defined(HAVE_ASSERT_H) && !defined(assert)
 # include <assert.h>
-#endif
 #endif
 
 #include <stdarg.h>

@@ -66,6 +66,17 @@ int adc_chip_temperature_demo(void)
     return 0;
 }
 
+
+int adc_power_voltage_demo(void)
+{
+	int voltage =0;
+
+    voltage = adc_get_interVolt();
+	printf("Power voltage:%d(mV) or %d.%03d(V)\r\n",voltage, voltage/1000, voltage%1000);	
+    
+    return 0;
+}
+
 #endif
 
 

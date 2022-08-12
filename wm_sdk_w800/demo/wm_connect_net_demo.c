@@ -58,6 +58,20 @@ int demo_webserver_config(void)
     return 0;
 }
 
+int demo_ble_config(void)
+{
+    printf("BLE config mode \n");
+#if TLS_CONFIG_BT
+	extern int demo_bt_enable();
+    tls_netif_add_status_event(con_net_status_changed_event);
+	demo_bt_enable();
+	tls_os_time_delay(HZ/2);
+	tls_wifi_set_oneshot_flag(4);	
+#endif
+    return 0;
+}
+
+
 
 //acitve connect to specified AP, use command as: t-connet("ssid","pwd");
 int demo_connect_net(char *ssid, char *pwd)

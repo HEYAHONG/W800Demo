@@ -42,7 +42,7 @@ typedef enum IRQn
   UART0_IRQn                  = 16,     /*!< UART0 Interrupts                                     */
   UART1_IRQn               	  = 17,     /*!< UART1 Interrupt                                      */
   TOUCH_IRQn                  = 18,     /*!< Touch Sensor Iterrupt                                */
-  UART24_IRQn                 = 19,     /*!< UART2/3/4 Interrupt                                  */
+  UART24_IRQn                 = 19,     /*!< UART2/3/4/5 Interrupt                                  */
   BLE_IRQn                    = 20,     /*!< BLE Interrupt                                        */
   BT_IRQn                     = 21,     /*!< BT Interrupt                                         */
   PWM_IRQn                 	  = 22,     /*!< PWM Interrupt                                        */
@@ -119,6 +119,8 @@ typedef volatile unsigned int TLS_REG;    /* Hardware register definition */
 #define HR_FLASH_CMD_START          (HR_FLASH_BASE_ADDR + 0x004)
 #define HR_FLASH_CR                 (HR_FLASH_BASE_ADDR + 0x008)
 #define HR_FLASH_ADDR               (HR_FLASH_BASE_ADDR + 0x010)
+#define HR_FLASH_ENCRYPT_CTRL       (HR_FLASH_BASE_ADDR + 0x014)
+#define HR_FLASH_KEY_STATUS         (HR_FLASH_BASE_ADDR + 0x018)
 /***************************************************************
  * SDIO WRAPPER Register
  ***************************************************************/
