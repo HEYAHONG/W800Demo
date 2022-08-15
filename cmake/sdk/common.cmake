@@ -20,9 +20,11 @@ ${SDK_ROOT}/include/wifi
 ${SDK_ROOT}/include/bt
 
 )
-
+file(GLOB_RECURSE SDK_HEADERS
+${SDK_ROOT}/include/*.h
+)
 list(APPEND SDK_SRCS
-
+${SDK_HEADERS}
 )
 
 option(BUILD_SDK_DEMO "build demo source" OFF)
@@ -46,7 +48,7 @@ ${SDK_ROOT}/demo/console/
 )
 
 #platform
-file(GLOB_RECURSE SDK_PATLFORM_S_C_CPP_SORCES
+file(GLOB_RECURSE SDK_PLATFORM_S_C_CPP_SORCES
 ${SDK_ROOT}/platform/arch/*.c
 ${SDK_ROOT}/platform/common/*.c
 ${SDK_ROOT}/platform/drivers/*.c
@@ -56,7 +58,7 @@ ${SDK_ROOT}/platform/drivers/*.h
 ${SDK_ROOT}/platform/sys/*.h
 )
 list(APPEND SDK_SRCS
-${SDK_PATLFORM_S_C_CPP_SORCES}
+${SDK_PLATFORM_S_C_CPP_SORCES}
 )
 list(APPEND SDK_INCLUDE_DIRS
 ${SDK_ROOT}/platform/common/params
