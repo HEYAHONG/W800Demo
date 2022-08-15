@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include "MQTT.hpp"
+#include "MQTT_SMGS.h"
 #include "string.h"
 #ifdef __cplusplus
 extern "C"
@@ -21,25 +22,96 @@ static const char * TAG="MQTT";
 
 
 
-
-
-
 /*
 MQTT相关
 */
-struct Network mqttserver= {0};
-struct MQTTClient mqttclient= {0};
-uint8_t mqtttxbuff[1024]= {0};
-uint8_t mqttrxbuff[1024]= {0};
+static struct Network mqttserver= {0};
+static struct MQTTClient mqttclient= {0};
+static uint8_t mqtttxbuff[1024]= {0};
+static uint8_t mqttrxbuff[1024]= {0};
 
-const int keepalive=120;
+static std::shared_ptr<MQTT_Cfg_t> Cfg=NULL;
+static std::shared_ptr<MQTT_Callback_t> callback=NULL;
+void MQTT_Set_Callback(MQTT_Callback_t cb)
+{
+    (*callback)=cb;
+}
+
+bool MQTT_Publish_Message(MQTT_Message_Ptr_t msg)
+{
+    auto client=&mqttclient;
+    if(client==NULL || client->buf ==NULL || client->buf_size ==0 || client->ipstack==NULL || client->ipstack->mqttwrite==NULL)
+    {
+        return false;//参数有误
+    }
+    if(MQTTIsConnected(&mqttclient)==0)
+    {
+        return false;
+    }
+
+    QoS Qos=QOS0;
+    switch(msg->qos)
+    {
+    default:
+        break;
+    case 0:
+        Qos=QOS0;
+        break;
+    case 1:
+        Qos=QOS1;
+        break;
+    case 2:
+        Qos=QOS2;
+        break;
+
+    }
+
+    struct MQTTMessage Msg;
+    memset(&Msg,0,sizeof(Msg));
+    Msg.payload=(char *)msg->payload.c_str();
+    Msg.payloadlen=msg->payload.length();
+    Msg.qos=Qos;
+    Msg.retained=msg->retain;
+    return MQTTPublish(&mqttclient,msg->topic.c_str(),&Msg)==0;
+}
+static bool check_cfg(MQTT_Cfg_t &Cfg)
+{
+    if(Cfg.host.empty())
+    {
+        return false;
+    }
+
+    if(Cfg.port==0)
+    {
+        return false;
+    }
+
+    if(Cfg.keepalive==0)
+    {
+        Cfg.keepalive=120;
+    }
+
+    if(Cfg.clientid.empty())
+    {
+        return false;
+    }
+
+    return true;
+}
 
 
-extern SMGS_gateway_context_t gateway_context;
 static void mqttmessageHandler(MessageData*msg)
 {
-    uint8_t buff[4096]= {0};
-    SMGS_GateWay_Receive_MQTT_MSG(&gateway_context,msg->topicName->lenstring.data,msg->topicName->lenstring.len,(uint8_t *)msg->message->payload,msg->message->payloadlen,msg->message->qos,msg->message->retained,buff,sizeof(buff));
+    MQTT_Message_Ptr_t ptr=std::make_shared<MQTT_Message_t>();
+    ptr->topic=std::string(msg->topicName->lenstring.data,msg->topicName->lenstring.len);
+    ptr->payload=std::string((char *)msg->message->payload,msg->message->payloadlen);
+    ptr->qos=(uint8_t)msg->message->qos;
+    ptr->retain=msg->message->retained;
+
+    if(callback->onmessage!=NULL)
+    {
+        callback->onmessage(*Cfg,ptr);
+    }
 
 }
 
@@ -60,173 +132,34 @@ static bool mqtt_ping(MQTTClient * client)
 }
 
 
-/*
-协议栈相关
-*/
-const char *GateWayName="W800Demo";
-char GateWaySerialNumber[32]="W800";
-SMGS_device_context_t device_context;
-
-bool SMGS_IsOnline(struct __SMGS_device_context_t *ctx)
-{
-    //默认返回真
-    return true;
-}
-
-bool SMGS_Device_Command(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_cmdid_t *cmdid,uint8_t *cmddata,size_t cmddata_length,uint8_t *retbuff,size_t *retbuff_length,SMGS_payload_retcode_t *ret)
-{
-    bool _ret=false;
-    wm_printf("%s:Device_Command(CmdID=%04X)\r\n",TAG,(uint32_t)(*cmdid));
-    return _ret;
-}
-
-bool SMGS_Device_ReadRegister(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
-{
-    bool ret=false;
-    wm_printf("%s:Device_ReadRegister(Addr=%04X)\r\n",TAG,(uint32_t)addr);
-    return ret;
-}
-
-bool SMGS_Device_WriteRegister(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
-{
-    bool ret=false;
-    wm_printf("%s:Device_WriteRegister(Addr=%04X,Data=%016llX,Flag=%02X)\r\n",TAG,(uint32_t)addr,(*dat),(uint32_t)(flag->val));
-    return ret;
-}
-
-bool SMGS_Device_ReadSensor(SMGS_device_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_sensor_address_t addr,uint64_t *dat,SMGS_payload_sensor_flag_t *flag)
-{
-    bool ret=false;
-    wm_printf("%s:Device_ReadSensor(Addr=%04X,Flag=%02X)\r\n",TAG,(uint32_t)addr,(uint32_t)(flag->val));
-    return ret;
-}
 
 
-SMGS_gateway_context_t gateway_context;
-
-bool SMGS_GateWay_Command(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_cmdid_t *cmdid,uint8_t *cmddata,size_t cmddata_length,uint8_t *retbuff,size_t *retbuff_length,SMGS_payload_retcode_t *ret)
-{
-    bool _ret=false;
-    wm_printf("%s:GateWay_Command(CmdID=%04X)\r\n",TAG,(uint32_t)(*cmdid));
-    return _ret;
-}
-
-bool SMGS_GateWay_ReadRegister(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
-{
-    bool ret=false;
-    wm_printf("%s:GateWay_ReadRegister(Addr=%04X)\r\n",TAG,(uint32_t)addr);
-    return ret;
-}
-
-bool SMGS_GateWay_WriteRegister(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_register_address_t addr,uint64_t *dat,SMGS_payload_register_flag_t *flag)
-{
-    bool ret=false;
-    wm_printf("%s:GateWay_WriteRegister(Addr=%04X,Data=%016llX,Flag=%02X)\r\n",TAG,(uint32_t)addr,(*dat),(uint32_t)(flag->val));
-    return ret;
-}
-
-bool SMGS_GateWay_ReadSensor(SMGS_gateway_context_t *ctx,SMGS_topic_string_ptr_t plies[],SMGS_payload_sensor_address_t addr,uint64_t *dat,SMGS_payload_sensor_flag_t *flag)
-{
-    bool ret=false;
-    wm_printf("%s:GateWay_ReadSensor(Addr=%04X,Flag=%02X)\r\n",TAG,(uint32_t)addr,(uint32_t)(flag->val));
-    return ret;
-}
-
-
-//设备查询函数
-SMGS_device_context_t * SMGS_Device_Next(struct __SMGS_gateway_context_t *ctx,SMGS_device_context_t * devctx)
-{
-    if(devctx==NULL)
-    {
-        return &device_context;//返回第一个设备
-    }
-
-    //由于只有一个设备，直接返回NULL
-
-    return NULL;
-}
-
-
-static bool SMGS_MessagePublish(struct __SMGS_gateway_context_t *ctx,const char * topic,void * payload,size_t payloadlen,uint8_t qos,int retain)
-{
-    if(MQTTIsConnected(&mqttclient)==0)
-    {
-        return false;
-    }
-
-    QoS Qos=QOS0;
-    switch(qos)
-    {
-    default:
-        break;
-    case 0:
-        Qos=QOS0;
-        break;
-    case 1:
-        Qos=QOS1;
-        break;
-    case 2:
-        Qos=QOS2;
-        break;
-
-    }
-
-    MQTTMessage msg;
-    memset(&msg,0,sizeof(msg));
-    msg.payload=payload;
-    msg.payloadlen=payloadlen;
-    msg.qos=Qos;
-    msg.retained=retain;
-    return MQTTPublish(&mqttclient,topic,&msg)==0;
-}
-
-static char subscribestr[64]= {0};
 static void mqtt_receive_task(void *arg)
 {
     wm_printf("%s:mqtt task start!!\r\n",TAG);
 
-    strcat(GateWaySerialNumber,macaddrstr);
-
-    {
-        //初始化设备上下文
-        SMGS_Device_Context_Init(&device_context);
-
-        //填写设备上下文
-        device_context.DeviceName=GateWayName;
-        device_context.DevicePosNumber=1;
-        device_context.DeviceSerialNumber=GateWaySerialNumber;//默认序列号同网关
-        device_context.IsOnline=SMGS_IsOnline;
-        device_context.Command=SMGS_Device_Command;
-        device_context.ReadRegister=SMGS_Device_ReadRegister;
-        device_context.WriteRegister=SMGS_Device_WriteRegister;
-        device_context.ReadSensor=SMGS_Device_ReadSensor;
-
-
-    }
-
-    {
-
-        //初始化网关上下文
-        SMGS_GateWay_Context_Init(&gateway_context,GateWaySerialNumber,SMGS_MessagePublish);
-
-        //填写网关上下文
-        gateway_context.GateWayName=GateWayName;
-        gateway_context.Command=SMGS_GateWay_Command;
-        gateway_context.ReadRegister=SMGS_GateWay_ReadRegister;
-        gateway_context.WriteRegister=SMGS_GateWay_WriteRegister;
-        gateway_context.ReadSensor=SMGS_GateWay_ReadSensor;
-        gateway_context.Device_Next=SMGS_Device_Next;
-    }
-
-
     while(true)
     {
-        //测试MQTT连接
+        while(!check_cfg(*Cfg))
+        {
+            if(callback->init!=NULL)
+            {
+                wm_printf("%s:wait for config!!\r\n",TAG);
+                callback->init(*Cfg);
+                vTaskDelay(pdMS_TO_TICKS(500));
+            }
+            else
+            {
+                wm_printf("%s:mqtt not init!!\r\n",TAG);
+                vTaskDelay(pdMS_TO_TICKS(3000));
+            }
+        }
+
+        //MQTT连接
         wm_printf("%s:mqtt start!!\r\n",TAG);
 
-
         NetworkInit(&mqttserver);
-        while(0!=NetworkConnect(&mqttserver,(char *)"mqtt.hyhsystem.cn",1883))
+        while(0!=NetworkConnect(&mqttserver,(char *)Cfg->host.c_str(),Cfg->port))
         {
             wm_printf("%s:connect mqtt server!\r\n",TAG);
             vTaskDelay(3000);
@@ -239,30 +172,29 @@ static void mqtt_receive_task(void *arg)
             MQTTPacket_connectData cfg=MQTTPacket_connectData_initializer;
 
             //使用keepalive选项
-            cfg.keepAliveInterval=keepalive;
+            cfg.keepAliveInterval=Cfg->keepalive;;
 
             //填写clientID
-            cfg.clientID.cstring=(char *)GateWaySerialNumber;
+            cfg.clientID.cstring=(char *)Cfg->clientid.c_str();
 
             //填写cleansession
-            cfg.cleansession=1;
+            cfg.cleansession=Cfg->cleansession;
 
             //填写用户名与密码
-            cfg.username.cstring=(char *)GateWaySerialNumber;
-            cfg.password.cstring=(char *)GateWaySerialNumber;
+            if(!Cfg->auth.username.empty())
+                cfg.username.cstring=(char *)Cfg->auth.username.c_str();
+            if(!Cfg->auth.password.empty())
+                cfg.password.cstring=(char *)Cfg->auth.password.c_str();
 
-            //填写will
-            uint8_t willbuff[256]= {0};
-            SMGS_gateway_will_t will= {0};
-            SMGS_GateWay_Will_Encode(&gateway_context,&will,willbuff,sizeof(willbuff));
-
-            cfg.will.topicName.cstring=(char *)will.topic;
-            cfg.will.qos=will.qos;
-            cfg.will.message.lenstring.data=(char *)will.payload;
-            cfg.will.message.lenstring.len=will.payloadlen;
-            cfg.will.retained=will.ratain;
-            cfg.willFlag=1;
-
+            if(!Cfg->will.will_topic.empty())
+            {
+                cfg.willFlag=1;
+                cfg.will.topicName.cstring=(char *)Cfg->will.will_topic.c_str();
+                cfg.will.message.lenstring.data=(char *)Cfg->will.will_payload.c_str();
+                cfg.will.message.lenstring.len=Cfg->will.will_payload.length();
+                cfg.will.qos=Cfg->will.will_qos;
+                cfg.will.retained=Cfg->will.will_retain;
+            }
 
             if(SUCCESS!=MQTTConnect(&mqttclient,&cfg))
             {
@@ -272,30 +204,51 @@ static void mqtt_receive_task(void *arg)
             }
         }
         {
-            memset(subscribestr,0,sizeof(subscribestr));
-            strcat(subscribestr,GateWaySerialNumber);
-            strcat(subscribestr,"/#");
-            if(SUCCESS!=MQTTSubscribe(&mqttclient,subscribestr,QOS0,mqttmessageHandler))
+            if(!Cfg->subscribe.subtopic.empty())
             {
-                wm_printf("%s:mqtt subscribe failed!!\r\n",TAG);
-                mqttserver.disconnect(&mqttserver);
-                continue;
+                QoS Qos=QOS0;
+                switch(Cfg->subscribe.qos)
+                {
+                default:
+                    break;
+                case 0:
+                    Qos=QOS0;
+                    break;
+                case 1:
+                    Qos=QOS1;
+                    break;
+                case 2:
+                    Qos=QOS2;
+                    break;
+
+                }
+                if(SUCCESS!=MQTTSubscribe(&mqttclient,Cfg->subscribe.subtopic.c_str(),Qos,mqttmessageHandler))
+                {
+                    mqttserver.disconnect(&mqttserver);
+                    wm_printf("%s:mqtt subscribe failed!!\r\n",TAG);
+                    continue;
+                }
             }
+
         }
 
         {
-            //发送网关上线消息
-            uint8_t buff[512]= {0};
-            SMGS_GateWay_Online(&gateway_context,buff,sizeof(buff),0,0);
+            if(callback->connect!=NULL)
+            {
+                callback->connect(*Cfg);
+            }
         }
-
-        wm_printf("%s:SimpleMQTTGateWayStack Online\r\n",TAG);
 
         {
             while(SUCCESS==MQTTYield(&mqttclient,10))
             {
                 vTaskDelay(1);
             }
+        }
+
+        if(callback->disconnect!=NULL)
+        {
+            callback->disconnect(*Cfg);
         }
 
 
@@ -316,7 +269,7 @@ static void mqtt_ping_task(void *arg)
     TickType_t last_ping_tick=xTaskGetTickCount();
     while(true)
     {
-        if(mqttclient.isconnected && xTaskGetTickCount()-last_ping_tick>pdMS_TO_TICKS(keepalive*1000/2))//10s ping 一次
+        if(mqttclient.isconnected && xTaskGetTickCount()-last_ping_tick>pdMS_TO_TICKS(Cfg->keepalive*1000/2))//10s ping 一次
         {
             last_ping_tick=xTaskGetTickCount();
             bool is_ok=mqtt_ping(&mqttclient);
@@ -327,21 +280,54 @@ static void mqtt_ping_task(void *arg)
 
 }
 
+
+
 uint32_t mqtt_receive_task_stack[4096]= {0};
 uint32_t mqtt_ping_task_stack[1024]= {0};
-
 extern "C"
 {
 #include  "wm_osal.h"
 }
 
+tls_os_task_t mqtt_receive_task_handle=NULL;
+tls_os_task_t mqtt_ping_task_handle=NULL;
 void MQTT_Init()
 {
+
+    if(mqtt_receive_task_handle!=NULL &&mqtt_ping_task_handle !=NULL)
+    {
+        return;
+    }
+    else
+    {
+        //变量初始化
+        Cfg=std::make_shared<MQTT_Cfg_t>();
+        callback=std::make_shared<MQTT_Callback_t>();
+
+
+        MQTT_Callback_t cb= {NULL,NULL,NULL,NULL};
+        MQTT_Set_Callback(cb);
+
+        //默认使用SMGS协议栈
+        cb.init=MQTT_SMGS_Init;
+        cb.connect=MQTT_SMGS_Connect;
+        cb.disconnect=MQTT_SMGS_DisConnect;
+        cb.onmessage=MQTT_SMGS_OnMessage;
+        MQTT_Set_Callback(cb);
+
+        {
+            Cfg->host="mqtt.hyhsystem.cn";
+            Cfg->port=1883;
+        }
+        wm_printf("%s:Init!\r\n",TAG);
+    }
+
+
     /*
     由于套接字超时设置无效,因此需要单独的任务执行ping
     */
-    tls_os_task_create(NULL,"mqtt_receive",mqtt_receive_task,NULL,(uint8_t *) mqtt_receive_task_stack,sizeof( mqtt_receive_task_stack),33,0);
-    tls_os_task_create(NULL,"mqtt_ping",mqtt_ping_task,NULL,(uint8_t *) mqtt_ping_task_stack,sizeof( mqtt_ping_task_stack),33,0);
+    tls_os_task_create(&mqtt_receive_task_handle,"mqtt_receive",mqtt_receive_task,NULL,(uint8_t *) mqtt_receive_task_stack,sizeof( mqtt_receive_task_stack),33,0);
+    tls_os_task_create(&mqtt_ping_task_handle,"mqtt_ping",mqtt_ping_task,NULL,(uint8_t *) mqtt_ping_task_stack,sizeof( mqtt_ping_task_stack),33,0);
 }
 
 

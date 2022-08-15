@@ -1,7 +1,7 @@
 ﻿
 #include "app.h"
 #include "MQTT.hpp"
-
+#include "string.h"
 
 static const char * TAG="app";
 

@@ -119,6 +119,11 @@ int _write_r(void *r, int file, const void *ptr, size_t len)
 }
 #endif
 
+__attribute__((weak)) int write(int file, const void *ptr, size_t len)
+{
+   return _write_r(NULL,file,ptr,len);
+}
+
 static int __ip2str(unsigned char v4v6, unsigned int *inuint, char *outtxt)
 {
     unsigned char i;
