@@ -43,6 +43,14 @@ PAHO_MQTT
 )
 
 
+#添加资源目录
+add_subdirectory(rc)
+list(APPEND LIBS
+RC
+)
+
+
+
 if(NOT DEFINED MAIN_SRCS)
 	set(MAIN_SRCS ${SDK_ROOT}/app/main.c )
 endif()

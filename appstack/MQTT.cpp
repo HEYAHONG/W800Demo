@@ -1,3 +1,6 @@
+#include <memory>
+#include <vector>
+#include <string>
 #include "MQTT.hpp"
 #include "string.h"
 #ifdef __cplusplus
