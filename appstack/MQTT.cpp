@@ -282,7 +282,7 @@ static void mqtt_ping_task(void *arg)
 
 
 
-uint32_t mqtt_receive_task_stack[4096]= {0};
+uint32_t mqtt_receive_task_stack[2048]= {0};
 uint32_t mqtt_ping_task_stack[1024]= {0};
 extern "C"
 {
