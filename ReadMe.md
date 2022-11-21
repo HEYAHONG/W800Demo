@@ -44,8 +44,13 @@
 - cmake :生成工程文件。
 - make :执行编译，也可使用其它工具(如ninja)。
 
-
 注意：[官方环境](https://www.winnermicro.com/upload/1/editor/1592032027265.rar)为windows下的环境，安装后即可使用官方的方式（直接使用make）在官方SDK中开发，只需要再安装cmake即可使用cmake生成各种工程（方便编辑）并开发。
+
+除了自行安装上述工具，在Linux下还可直接使用docker(需要自行安装docker)命令直接进入编译环境：
+
+```bash
+sudo docker run -it --rm -u  `id -u`:`id -g` -v `pwd`:/work -w /work heyahong/buildenv-ubuntu22.04:w800
+```
 
 ## 步骤
 
