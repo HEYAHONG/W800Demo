@@ -50,6 +50,7 @@
 
 ```bash
 sudo docker run -it --rm -u  `id -u`:`id -g` -v `pwd`:/work -w /work heyahong/buildenv-ubuntu22.04:w800
+#更多关于此docker镜像的说明见https://hub.docker.com/r/heyahong/buildenv-ubuntu22.04
 ```
 
 ## 步骤
