@@ -34,6 +34,10 @@
   const unsigned char * RCGetHandle(const char * name);
   ```
 
+## 测试截图
+
+![W800Demo](doc/image/W800Demo.png)
+
 # 编译
 
 ## 工具
