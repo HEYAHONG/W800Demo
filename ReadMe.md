@@ -86,7 +86,14 @@ mingw32-make
 ```
 
 编译完成即可在构建目录得到镜像文件。
+- 在生成工程文件启用Kconfig(-DUSE_KCONFIG=ON)时，可使用menuconfig目标进行Kconfig配置。
 
+```bash
+#Linux下执行make
+make menuconfig
+#MINGW32/MINGW64下执行mingw32-make
+mingw32-make menuconfig
+```
 
 
 ## 烧录
@@ -107,6 +114,15 @@ mingw32-make flash
 ```
 
 烧录过程中需要手动重启硬件两次，根据烧录程序的提示操作。
+烧录并使用wmtool调试，命令如下(Linux下可能要使用sudo)：
+
+```bash
+#Linux下执行make
+make run
+#MINGW32/MINGW64下执行mingw32-make
+mingw32-make run
+```
+
 
 # 其他说明
 
