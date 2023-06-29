@@ -42,7 +42,7 @@ SECTIONS
 {
  .text : {
   . = ALIGN(0x4) ;
-  KEEP(*startup.o(.vectors))
+  KEEP(*startup*(.vectors))
   __stext = . ;
   *(.text)
   *(.text*)
@@ -94,7 +94,7 @@ SECTIONS
  .vdata : {
  	. = ALIGN(0x4) ;
   	__vdata_start__ = . ;
- 	KEEP(*startup.o(.vdata))
+ 	KEEP(*startup*(.vdata))
  	. = ALIGN(0x4) ;
   	__vdata_end__ = .;
  } > REGION_VDATA

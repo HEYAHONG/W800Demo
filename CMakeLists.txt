@@ -126,7 +126,7 @@ include_directories(${MAIN_INCLUDE_DIRS})
 
 #添加可执行文件
 add_executable(${PROJECT_NAME} ${MAIN_SRCS})
-target_link_libraries(${PROJECT_NAME}  ${SDK_LIBS}  "-Wl,--whole-archive"  ${SDK_PRECOMPILED_LIBS} "-Wl,--no-whole-archive" ${LIBS} )
+target_link_libraries(${PROJECT_NAME}    "-Wl,--whole-archive" ${SDK_LIBS}  ${SDK_PRECOMPILED_LIBS} "-Wl,--no-whole-archive" ${LIBS} )
 
 #生成bin文件
 add_custom_target(${PROJECT_NAME}.bin ALL

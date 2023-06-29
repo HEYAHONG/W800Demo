@@ -49,6 +49,7 @@ ${SDK_ROOT}/demo/console/
 
 #platform
 file(GLOB_RECURSE SDK_PLATFORM_S_C_CPP_SORCES
+${SDK_ROOT}/platform/arch/*.S
 ${SDK_ROOT}/platform/arch/*.c
 ${SDK_ROOT}/platform/common/*.c
 ${SDK_ROOT}/platform/drivers/*.c
@@ -90,6 +91,7 @@ ${SDK_ROOT}/src/network/*.h
 )
 list(REMOVE_ITEM  SDK_NETWORK_S_C_CPP_SORCES
 ${SDK_ROOT}/src/network/lwip2.0.3/core/timers.c
+${SDK_ROOT}/src/network/lwip2.0.3/core/ipv4/ip_frag.c
 )
 list(APPEND SDK_SRCS
 ${SDK_NETWORK_S_C_CPP_SORCES}
@@ -196,7 +198,7 @@ list(APPEND SDK_PRECOMPILED_LIBS
 ${SDK_ROOT}/lib/w800/libwlan.a
 ${SDK_ROOT}/lib/w800/libbtcontroller.a
 ${SDK_ROOT}/lib/w800/libdsp.a
-${CMAKE_CURRENT_SOURCE_DIR}/lib/w800/libwmarch.a
+#${CMAKE_CURRENT_SOURCE_DIR}/lib/w800/libwmarch.a
 )
 
 #设置宏定义
